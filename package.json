@@ -1,14 +1,21 @@
 {
-  "name": "4021_backend",
+  "name": "yahtzee",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ugluguglug/Yahtzee.git"
+  },
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ugluguglug/Yahtzee/issues"
+  },
+  "homepage": "https://github.com/ugluguglug/Yahtzee#readme",
   "dependencies": {
     "express": "^4.18.1"
   }
