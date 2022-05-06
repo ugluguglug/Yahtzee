@@ -49,8 +49,8 @@
           <div class="navbar-nav">
             <a class="nav-item nav-link" href="index.html">HOME</a>
             <a class="nav-item nav-link" href="#how-to-play">HOW TO PLAY?</a>
-            <a class="nav-item nav-link" href="#login">LOGIN</a>
-            <a class="nav-item nav-link" href="#register">REGISTER</a>
+            <a class="nav-item nav-link" href="#signin-form">LOGIN</a>
+            <a class="nav-item nav-link" href="#register-form">REGISTER</a>
             <a class="nav-item nav-link" href="#about-us">ABOUT US</a>
           </div>
         </div>
@@ -65,7 +65,7 @@
               <p class="unique_text"></p>
               <h1 class="years_text">Yahtzee</h1>
               <p class="ipsum_text">Yahtzee is a dice game made by Milton Bradley. The game is a development of earlier dice games such as Poker Dice, Yacht and Generala. It is also similar to Yatzy, which is popular in Scandinavia. The objective of the game is to score points by rolling five dice to make certain combinations. The dice can be rolled up to three times in a turn to try to make various scoring combinations and dice must remain in the box. A game consists of thirteen rounds. After each round, the player chooses which scoring category is to be used for that round. Once a category has been used in the game, it cannot be used again. The scoring categories have varying point values, some of which are fixed values and others for which the score depends on the value of the dice. A Yahtzee is five-of-a-kind and scores 50 points, the highest of any category. The winner is the player who scores the most points.</p>
-              <div class="read_more_bt"><a href="#login">PLAY NOW!!</a></div>
+              <div class="read_more_bt"><a href="#signin-form">PLAY NOW!!</a></div>
             </div>
             <div class="col-md-6">
               <div class="image_2"><img src="images/yahtzee-card.png"></div>
@@ -183,71 +183,55 @@
       <!-- banner section end -->
       <div class="dice_background">
         <!-- client section start --> 
-        <div id="login" class="client_section layout_padding">
+        <form id="signin-form" class="client_section layout_padding">
           <div class="container login_section2">
             <h1 class="client_taital">Login and Play!</h1>
               <div class="row">
                 <div class="col-md-6">
                   <div class="mail_section">
-                    <input type="text" class="mail_text" placeholder="Email" name="text">
-                    <input type="password" class="mail_text" placeholder="Password" name="text">      
+                    <input id="signin-username" type="text" class="mail_text" placeholder="Email" name="text">
+                    <input id="signin-password" type="password" class="mail_text" placeholder="Password" name="text">      
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="login_section">
                     <div class="map_text"><span class="call_text">Login to your account and play with your friends now!</span></div>
-                    <div class="send_bt"><a href="#">Login</a></div>
-                    <div class="error_text"><span class="call_text_left">Error Text</span></div>
+                    <button class="send_bt" type="submit">Login</button>
+                    <div id="signin-message" class="error_text"><span class="call_text_left">Error Text</span></div>
                   </div>
                 </div>
               </div>
           </div>
-        </div>
+        </form>
         <!-- client section end -->
         <hr class="rounded">
         <!-- contact section start -->
-        <div id="register" class="contact_section layout_padding">
+        <form id="register-form" class="contact_section layout_padding">
           <div class="container">
             <h1 class="contact_taital">Register an Account</h1>
             <div class="contact_section_2">
               <div class="row">
                 <div class="col-md-6">
                   <div class="mail_section">
-                    <input type="text" class="mail_text" placeholder="Name" name="text">
-                    <input type="text" class="mail_text" placeholder="Email" name="text">
-                    <input type="password" class="mail_text" placeholder="Password" name="text">
-                    <input type="password" class="mail_text" placeholder="Confirm Password" name="text">             
+                    <input id="register-username" maxlength="10" type="text" class="mail_text" placeholder="Username" name="text">
+                    <input id="register-email" type="text" class="mail_text" placeholder="Email" name="text">
+                    <input id="register-password" type="password" class="mail_text" placeholder="Password" name="text">
+                    <input id="register-confirm" type="password" class="mail_text" placeholder="Confirm Password" name="text">             
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="register_section">
                     <div class="map_text"><span class="call_text">Create a new account to play with your friends <br>and save your highest score!</span></div>
-                    <div class="send_bt"><a href="#">Register</a></div>
-                    <div class="error_text"><span class="call_text_left">Error Text</span></div>
+                    <button type="submit" class="send_bt">Register</button>
+                    <div id="register-message" class="error_text"><span class="call_text_left">Error Text</span></div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        </form>
      </div>
       <!-- contact section end -->
-      <!-- join us section start -->
-      <!--
-      <div class="join_section">
-        <div class="container">
-          <div class="row">
-            <div class="col-md-6">
-              <h1 class="member_text">Want To Be A Member? Join With Us</h1>
-            </div>
-            <div class="col-md-6">
-              <div class="join_bt"><a href="#">SEND</a></div>
-            </div>
-          </div>
-        </div>
-      </div>
-      -->
-      <!-- join us section end -->
       <!-- footer section start -->
       <div id="about-us"class="footer_section layout_padding">
         <div class="container">
@@ -273,12 +257,37 @@
     <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
     <script src="js/custom.js"></script>
     <!-- javascript --> 
-    <script src="js/owl.carousel.js"></script>
+    <!--script src="js/owl.carousel.js"></script-->
     <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
     <script>
       $('#myCarousel').carousel({
               interval: false
           });
    </script>
+  <script src="/socket.io/socket.io.min.js"></script>
+  <script src="scripts/socket.js"></script>
+  <script src="scripts/avatar.js"></script>
+  <script src="scripts/ui.js"></script>
+  <script src="scripts/registration.js"></script>
+  <script src="scripts/authentication.js"></script>
+  <script>
+  $(document).ready(function() {
+      // Initialize the UI
+      UI.initialize();
+
+      // Validate the signin
+      Authentication.validate(
+          () => {
+              //SignInForm.hide();
+              location.href = "game.html"
+              UserPanel.update(Authentication.getUser());
+              UserPanel.show();
+
+              Socket.connect();
+          },
+          () => { SignInForm.show(); }
+      );
+  });
+  </script>
   </body>
 </html>

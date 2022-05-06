@@ -315,7 +315,6 @@ button {
 }
 .image_table{
      width: 90%;
-	 
      float: left;
 	 margin: 0px 20px; 
 }
@@ -766,21 +765,18 @@ justify-content: center;
     border: 0px;
 }
 
+
 .send_bt {
-    width: 100%;
+	background-color: #eac208;
+	color: #fefeff;
+	text-align: center;
+	padding: 10px 0px;
+	font-size: 20px;	
+	width: auto;
     float: left;
     margin-top: 40px;
 	margin-bottom: 20px;
-}
-
-.send_bt a{
-     width: 30%;
-     float: left;
-     background-color: #eac208;
-     color: #fefeff;
-     text-align: center;
-     padding: 10px 0px;
-     font-size: 20px;
+	padding: 10px 20px;
 }
 
 .send_bt a:hover{
