@@ -9,15 +9,13 @@ function containWordCharsOnly(text) {
 }
 
 router.post("/register", (req, res) => {
-    // Get the JSON data from the body
     const { username, password } = req.body;
-
     console.log(username, password);
 
-    // D. Reading the users.json file
+    // Read from db
     const users = JSON.parse(fs.readFileSync("./database/users.json"));
 
-    // E. Checking for the user data correctness
+    // Check post data
     if (username === "" || password === "") {
         res.json({ status: "error", error: "Username/email/password cannot be empty!" });
     }
@@ -28,16 +26,49 @@ router.post("/register", (req, res) => {
         res.json({ status: "error", error: "Username has already been used!" });
     }
     else {
-        // G. Adding the new user account
         const hash = bcrypt.hashSync(password, 10);
         users[username] = { password: hash, highscore: 0 };
 
-        // H. Saving the users.json file
         fs.writeFileSync("./database/users.json", JSON.stringify(users, null, " "));
 
-        // I. Sending a success response to the browser
         res.json({ status: "success" });
     }
+});
+
+router.post("/signin", (req, res) => {
+    const { username, password } = req.body;
+
+    // Read from db
+    const db = JSON.parse(fs.readFileSync("./database/users.json"));
+
+    // Check post data
+    if (username === "" || password === "") {
+        res.json({ status: "error", error: "Username/password cannot be empty!" });
+    }
+    else if (!(username in db)) {
+        res.json({ status: "error", error: "User does not exist!" });
+    }
+    else if (!bcrypt.compareSync(password, db[username].password)) {
+        res.json({ status: "error", error: "Incorrect password!" });
+    }
+    else {
+        // Setup session and return success response
+        req.session.user = { username: username };
+        res.json({ status: "success", user: { username: username } });
+    }
+
+
+});
+
+router.get("/validate", (req, res) => {
+
+    if (req.session.user) {
+        res.json({ status: "success", user: req.session.user });
+    }
+    else {
+        res.json({ status: "error", error: "Not yet logged in!" });
+    }
+
 });
 
 module.exports = router
