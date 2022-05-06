@@ -10,7 +10,7 @@ const gameSession = session({
     resave: false,
     saveUninitialized: false,
     rolling: true,
-    cookie: { maxAge: 300000 }
+    cookie: { maxAge: 30 * 60 * 1000 }
 });
 
 const app = express();
@@ -27,6 +27,8 @@ const io = new Server(httpServer);
 io.use((socket, next) => {
     gameSession(socket.request, {}, next);
 })
+
+require('./sockets')(io);
 
 httpServer.listen(8000, () => {
     console.log("Server started");

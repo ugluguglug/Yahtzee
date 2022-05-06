@@ -56,8 +56,6 @@ router.post("/signin", (req, res) => {
         req.session.user = { username: username };
         res.json({ status: "success", user: { username: username } });
     }
-
-
 });
 
 router.get("/validate", (req, res) => {
@@ -68,7 +66,6 @@ router.get("/validate", (req, res) => {
     else {
         res.json({ status: "error", error: "Not yet logged in!" });
     }
-
 });
 
 module.exports = router
