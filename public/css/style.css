@@ -73,7 +73,7 @@ h6 {
      font-weight: normal;
      line-height: normal;
      color: #111111;
-     margin: 0
+     margin: 0;
 }
 
 h1 {
@@ -921,3 +921,27 @@ justify-content: center;
 .margin_top_0{
      margin-top: 90px; 
 }
+
+/* initialScreen overlay */
+
+#initialScreen {
+	margin: auto;
+    border: 3px solid green;
+    padding: 10px;
+	text-align: center;
+}
+
+.username-text{
+	letter-spacing: 0;
+    font-weight: normal;
+    position: relative;
+    padding: 0 0 10px 0;
+    font-weight: normal;    
+	line-height: normal;
+    color: #111111;
+	margin: 0;
+}
+
+
+
+
