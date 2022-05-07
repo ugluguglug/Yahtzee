@@ -86,6 +86,8 @@ const GamePage = (function() {
     //Request new room 
     function newGame(){
         Socket.createRoom();
+        $("#initialScreen").hide();
+        $("#createNewGame").fadeIn(500);
     }
     //Request join game
     function joinGame(){
@@ -124,6 +126,7 @@ const GamePage = (function() {
 
         // Hide it
         $("#game-page").hide();
+        
 
         // Click event for the signout button
         $("#signout-button").on("click", () => {
@@ -141,6 +144,10 @@ const GamePage = (function() {
     // This function shows the form with the user
     const show = function(user) {
         $("#game-page").fadeIn(500);
+        $("#createNewGame").hide();
+        $("#gameScreen").hide();
+        $("#leaderboard").hide();
+
     };
 
     // This function hides the form
@@ -151,10 +158,10 @@ const GamePage = (function() {
     // This function updates the user panel
     const update = function(user) {
         if (user) {
-            $("#game-page .game-page-username").text(user.username);
+            $("#game-page .username-text").text(user.username);
         }
         else {
-            $("#game-page .game-page-username").text("");
+            $("#game-page .username-text").text("");
         }
     };
 
