@@ -25,12 +25,15 @@
       <!-- Tweaks for older IEs-->
       <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
       <!-- owl stylesheets --> 
+      <!--
       <link rel="stylesheet" href="css/owl.carousel.min.css">
       <link rel="stylesheet" href="css/owl.theme.default.min.css">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" media="screen">
+      -->
    </head>
    <!-- body -->
    <body>
+     <div id="front-page">
       <!-- header top section start -->
       <div class="header_top">
         <div class="container">
@@ -197,7 +200,7 @@
                   <div class="login_section">
                     <div class="map_text"><span class="call_text">Login to your account and play with your friends now!</span></div>
                     <button class="send_bt" type="submit">Login</button>
-                    <div id="signin-message" class="error_text"><span class="call_text_left">Error Text</span></div>
+                    <div id="signin-message" class="error_text"><span class="call_text_left"></span></div>
                   </div>
                 </div>
               </div>
@@ -214,7 +217,6 @@
                 <div class="col-md-6">
                   <div class="mail_section">
                     <input id="register-username" maxlength="10" type="text" class="mail_text" placeholder="Username" name="text">
-                    <input id="register-email" type="text" class="mail_text" placeholder="Email" name="text">
                     <input id="register-password" type="password" class="mail_text" placeholder="Password" name="text">
                     <input id="register-confirm" type="password" class="mail_text" placeholder="Confirm Password" name="text">             
                   </div>
@@ -223,7 +225,7 @@
                   <div class="register_section">
                     <div class="map_text"><span class="call_text">Create a new account to play with your friends <br>and save your highest score!</span></div>
                     <button type="submit" class="send_bt">Register</button>
-                    <div id="register-message" class="error_text"><span class="call_text_left">Error Text</span></div>
+                    <div id="register-message" class="error_text"><span class="call_text_left"></span></div>
                   </div>
                 </div>
               </div>
@@ -233,7 +235,7 @@
      </div>
       <!-- contact section end -->
       <!-- footer section start -->
-      <div id="about-us"class="footer_section layout_padding">
+      <div id="about-us" class="footer_section layout_padding">
         <div class="container">
           <div class="social_icon">
             <ul>
@@ -247,6 +249,50 @@
         </div>
       </div>
       <!-- footer section end -->
+    </div>
+    <!-- front page end -->
+    <!-- game page start-->
+    <div id="game-page" class="game-page">
+      <h1> Game Page </h1>
+      <div id="pair-up-container">
+
+        <div id="initialScreen" class="container">
+            <h2 id="game-page-username" class="game-page-username">
+              <span>Welcome, </span>span><span class="username-text"></span>
+            </h2>   
+          <button
+            type="submit"
+            class="btn btn-success"
+            id="newGameButton"
+          >
+            Create New Game
+          </button>
+          <div>OR</div>
+          <div class="form-group">
+            <input type="text" placeholder="Enter Game Code" id="gameCodeInput"/>
+          </div>
+          <button
+            type="submit"
+            class="btn btn-success"
+            id="joinGameButton"
+          >
+            Join Game
+          </button>
+        </div>
+
+        <div id="gameScreen" class="h-100">
+          <div class="d-flex flex-column align-items-center justify-content-center h-100">
+  
+            <h1>Your game code is: <span id="gameCodeDisplay"></span></h1>
+  
+            <canvas id="canvas"></canvas>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+    <!--game page end-->>
     <!-- Javascript files-->
     <script src="js/jquery.min.js"></script>
     <script src="js/popper.min.js"></script>
@@ -266,28 +312,28 @@
    </script>
   <script src="/socket.io/socket.io.min.js"></script>
   <script src="scripts/socket.js"></script>
-  <script src="scripts/avatar.js"></script>
   <script src="scripts/ui.js"></script>
   <script src="scripts/registration.js"></script>
   <script src="scripts/authentication.js"></script>
   <script>
   $(document).ready(function() {
       // Initialize the UI
+      
       UI.initialize();
-
+    
       // Validate the signin
       Authentication.validate(
           () => {
-              //SignInForm.hide();
-              location.href = "game.html"
-              UserPanel.update(Authentication.getUser());
-              UserPanel.show();
+              FrontPage.hide();
+              GamePage.update(Authentication.getUser());
+              GamePage.show();
 
               Socket.connect();
           },
-          () => { SignInForm.show(); }
+          () => { FrontPage.show(); }
       );
   });
   </script>
+
   </body>
 </html>
