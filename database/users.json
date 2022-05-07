@@ -1,4 +1,12 @@
 {
+ "1": {
+  "password": "$2b$10$RL8OV6E9DhK41JMF34uGyOz8sJl1uOBUw8mj1XKeT8stKJ1TOLQ2C",
+  "highscore": 0
+ },
+ "2": {
+  "password": "$2b$10$/EXRKjO0MEez6I.ASdTiU.B1CUjDX8xhYiEvh.ua7izY7z7QE4ufq",
+  "highscore": 0
+ },
  "abc": {
   "password": "$2b$10$neYhgJciv2pYxz4NcDfIr.kYB4aptIctblVkSvOAL6GIAQrVQ1ooy",
   "highscore": 0

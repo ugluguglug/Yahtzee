@@ -10,14 +10,14 @@ function containWordCharsOnly(text) {
 
 router.post("/register", (req, res) => {
     const { username, password } = req.body;
-    console.log(username, password);
+    console.log(`New user registering${username}, ${password})`);
 
     // Read from db
     const users = JSON.parse(fs.readFileSync("./database/users.json"));
 
     // Check post data
     if (username === "" || password === "") {
-        res.json({ status: "error", error: "Username/email/password cannot be empty!" });
+        res.json({ status: "error", error: "Username/password cannot be empty!" });
     }
     else if (!containWordCharsOnly(username)) {
         res.json({ status: "error", error: "The username should contain only underscores, letters or numbers!" });

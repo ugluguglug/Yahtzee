@@ -31,5 +31,5 @@ io.use((socket, next) => {
 require('./sockets')(io);
 
 httpServer.listen(8000, () => {
-    console.log("Server started");
+    console.log("Server started @ localhost:8000");
 });
