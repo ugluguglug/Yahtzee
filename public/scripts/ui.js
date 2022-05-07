@@ -1,10 +1,6 @@
-const SignInForm = (function() {
+const FrontPage = (function() {
     // This function initializes the UI
     const initialize = function() {
-        // Populate the avatar selection
-        
-        // Hide it
-
 
         // Submit event for the signin form
         $("#signin-form").on("submit", (e) => {
@@ -19,9 +15,8 @@ const SignInForm = (function() {
             Authentication.signin(username, password,
                 () => {
                     hide();
-                    UserPanel.update(Authentication.getUser());
-                    UserPanel.show();
-
+                    GamePage.update(Authentication.getUser());
+                    GamePage.show();
                     Socket.connect();
                 },
                 (error) => { $("#signin-message").text(error); }
@@ -35,7 +30,6 @@ const SignInForm = (function() {
 
             // Get the input fields
             const username = $("#register-username").val().trim();
-            const email   = $("#register-email").val().trim();
             const password = $("#register-password").val().trim();
             const confirmPassword = $("#register-confirm").val().trim();
 
@@ -46,7 +40,7 @@ const SignInForm = (function() {
             }
 
             // Send a register request
-            Registration.register(username, email, password,
+            Registration.register(username, password,
                 () => {
                     $("#register-form").get(0).reset();
                     $("#register-message").text("You can sign in now.");
@@ -58,7 +52,7 @@ const SignInForm = (function() {
 
     // This function shows the form
     const show = function() {
-        $("#signin-overlay").fadeIn(500);
+        $("#front-page").fadeIn(500);
     };
 
     // This function hides the form
@@ -66,17 +60,70 @@ const SignInForm = (function() {
         $("#signin-form").get(0).reset();
         $("#signin-message").text("");
         $("#register-message").text("");
-        $("#signin-overlay").fadeOut(500);
+        $("#front-page").fadeOut(500);
     };
 
     return { initialize, show, hide };
 })();
 
-const UserPanel = (function() {
+const GamePage = (function() {
     // This function initializes the UI
+
+    const gameScreen = document.getElementById('gameScreen');
+    const initialScreen = document.getElementById('initialScreen');
+    const newGameBtn = document.getElementById('newGameButton');
+    const joinGameBtn = document.getElementById('joinGameButton');
+    const gameCodeInput = document.getElementById('gameCodeInput');
+    const gameCodeDisplay = document.getElementById('gameCodeDisplay');
+
+    newGameBtn.addEventListener('click', newGame);
+    joinGameBtn.addEventListener('click', joinGame);
+    
+
+    let gameActive = false;
+    let playerNumber;
+
+    //Request new room 
+    function newGame(){
+        Socket.createRoom();
+    }
+    //Request join game
+    function joinGame(){
+        Socket.joinRoom(gameCodeInput);
+    }
+
+    //Start the game when the 2nd player joined the room
+    function handleInit(number){
+        playerNumber = number
+        initialScreen.style.display = "none"
+        //game start here
+
+
+    }
+    function handleGameState(gameState){
+
+    }
+    function handleGameOver(){
+        
+    }
+
+    function handleGameCode(gameCode){
+        gameCodeDisplay.innerText = gameCode;
+    }
+    function handleUnknownCode(){
+        reset();
+        alert('Unknown Game Code')
+    }
+    function handleTooManyPlayers(){
+        reset();
+        alert('This game is already in progress');
+    }
+
     const initialize = function() {
+
+
         // Hide it
-        $("#user-panel").hide();
+        $("#game-page").hide();
 
         // Click event for the signout button
         $("#signout-button").on("click", () => {
@@ -84,9 +131,8 @@ const UserPanel = (function() {
             Authentication.signout(
                 () => {
                     Socket.disconnect();
-
                     hide();
-                    SignInForm.show();
+                    FrontPage.show();
                 }
             );
         });
@@ -94,171 +140,40 @@ const UserPanel = (function() {
 
     // This function shows the form with the user
     const show = function(user) {
-        $("#user-panel").show();
+        $("#game-page").fadeIn(500);
     };
 
     // This function hides the form
     const hide = function() {
-        $("#user-panel").hide();
+        $("#game-page").fadeOut(500);
     };
 
     // This function updates the user panel
     const update = function(user) {
         if (user) {
-            $("#user-panel .user-avatar").html(Avatar.getCode(user.avatar));
-            $("#user-panel .user-name").text(user.name);
+            $("#game-page .game-page-username").text(user.username);
         }
         else {
-            $("#user-panel .user-avatar").html("");
-            $("#user-panel .user-name").text("");
+            $("#game-page .game-page-username").text("");
         }
     };
 
-    return { initialize, show, hide, update };
+    return { initialize, handleInit, handleGameState, handleGameOver, handleGameCode, handleUnknownCode, handleTooManyPlayers, show, hide, update };
 })();
 
-const OnlineUsersPanel = (function() {
-    // This function initializes the UI
-    const initialize = function() {};
-
-    // This function updates the online users panel
-    const update = function(onlineUsers) {
-        const onlineUsersArea = $("#online-users-area");
-
-        // Clear the online users area
-        onlineUsersArea.empty();
-
-		// Get the current user
-        const currentUser = Authentication.getUser();
-
-        // Add the user one-by-one
-        for (const username in onlineUsers) {
-            if (username != currentUser.username) {
-                onlineUsersArea.append(
-                    $("<div id='username-" + username + "'></div>")
-                        .append(UI.getUserDisplay(onlineUsers[username]))
-                );
-            }
-        }
-    };
-
-    // This function adds a user in the panel
-	const addUser = function(user) {
-        const onlineUsersArea = $("#online-users-area");
-		
-		// Find the user
-		const userDiv = onlineUsersArea.find("#username-" + user.username);
-		
-		// Add the user
-		if (userDiv.length == 0) {
-			onlineUsersArea.append(
-				$("<div id='username-" + user.username + "'></div>")
-					.append(UI.getUserDisplay(user))
-			);
-		}
-	};
-
-    // This function removes a user from the panel
-	const removeUser = function(user) {
-        const onlineUsersArea = $("#online-users-area");
-		
-		// Find the user
-		const userDiv = onlineUsersArea.find("#username-" + user.username);
-		
-		// Remove the user
-		if (userDiv.length > 0) userDiv.remove();
-	};
-
-    return { initialize, update, addUser, removeUser };
-})();
-
-const ChatPanel = (function() {
-	// This stores the chat area
-    let chatArea = null;
-
-    // This function initializes the UI
-    const initialize = function() {
-		// Set up the chat area
-		chatArea = $("#chat-area");
-       
-
-        // Submit event for the input form
-        $("#chat-input-form").on("submit", (e) => {
-            // Do not submit the form
-            e.preventDefault();
-
-            // Get the message content
-            const content = $("#chat-input").val().trim();
-
-            // Post it
-            Socket.postMessage(content);
-
-			// Clear the message
-            $("#chat-input").val("");
-
-        });
-
-        $("#chat-input-form").keydown(() => {
-            Socket.msgTyping();
-        });
- 	};
-
-    // This function updates the chatroom area
-    const update = function(chatroom) {
-        // Clear the online users area
-        chatArea.empty();
-
-        // Add the chat message one-by-one
-        for (const message of chatroom) {
-			addMessage(message);
-        }
-    };
-
-    // This function adds a new message at the end of the chatroom
-    const addMessage = function(message) {
-		const datetime = new Date(message.datetime);
-		const datetimeString = datetime.toLocaleDateString() + " " +
-							   datetime.toLocaleTimeString();
-
-		chatArea.append(
-			$("<div class='chat-message-panel row'></div>")
-				.append(UI.getUserDisplay(message.user))
-				.append($("<div class='chat-message col'></div>")
-					.append($("<div class='chat-date'>" + datetimeString + "</div>"))
-					.append($("<div class='chat-content'>" + message.content + "</div>"))
-				)
-		);
-		chatArea.scrollTop(chatArea[0].scrollHeight);
-    };
-
-    const updateTyping = function(name) {
-         if ($("#user-panel .user-name").text() == name) {
-            $("#typing-status").text("");
-         }
-         else {
-            $("#typing-status").text(name + " is typing...");
-         }
-         
-    };
-
-    const clearTyping = function () {
-        $("#typing-status").text("");
-    }
-
-    return { initialize, update, addMessage, updateTyping, clearTyping };
-})();
 
 const UI = (function() {
     // This function gets the user display
     const getUserDisplay = function(user) {
-        return $("<div class='field-content row shadow'></div>")
-            .append($("<span class='user-avatar'>" +
-			        Avatar.getCode(user.avatar) + "</span>"))
-            .append($("<span class='user-name'>" + user.name + "</span>"));
+        console.log("running getUserDisplay");
+        /*
+        return $("<div id='game-page-username' class='game-page-username'></div>")
+            .append($("<h2 class='username-text'>" + hi + "</h2>"));
+        */
     };
 
     // The components of the UI are put here
-    const components = [SignInForm, UserPanel, OnlineUsersPanel, ChatPanel];
+    const components = [FrontPage, GamePage];
 
     // This function initializes the UI
     const initialize = function() {

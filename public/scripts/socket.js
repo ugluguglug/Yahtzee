@@ -19,9 +19,35 @@ const Socket = (function() {
             socket.emit("get users");
 
             // Get the chatroom messages
-            socket.emit("get messages");
+            //socket.emit("get messages");
         });
+        socket.on('init', handleInit);
+        socket.on('gameState', handleGameState);
+        socket.on('gameOver', handleGameOver);
+        socket.on('gameCode', handleGameCode);
+        socket.on('unknownCode', handleUnknownCode);
+        socket.on('tooManyPlayers', handleTooManyPlayers);
 
+        function handleInit(playerNumber){
+            Gamepage.handleInit(playerNumber);
+        }
+        function handleGameState(){
+            Gamepage.handleGameState();
+        }
+        function handleGameOver(){
+            Gamepage.handleGameOver();
+        }
+        function handleGameCode(gameCode){
+            Gamepage.handleGameCode(gameCode);
+        }
+        function handleUnknownCode(){
+            Gamepage.handleUnknownCode();
+        }
+        function handleTooManyPlayers(){
+            Gamepage.handleTooManyPlayers();
+        }
+
+        /*
         // Set up the users event
         socket.on("users", (onlineUsers) => {
             onlineUsers = JSON.parse(onlineUsers);
@@ -70,7 +96,18 @@ const Socket = (function() {
                 ChatPanel.clearTyping();
             }, 3000);
         })
+        */
     };
+
+    const createRoom = function() {
+        socket.emit("create room");
+        console.log("Create new room from client");
+    };
+
+    const joinRoom = function(roomID) {
+        socket.emit("join room", roomID);
+        console.log("Join room from client");
+    }
 
     // This function disconnects the socket from the server
     const disconnect = function() {
@@ -78,7 +115,7 @@ const Socket = (function() {
         socket = null;
     };
 
-    // This function sends a post message event to the server
+/*    // This function sends a post message event to the server
     const postMessage = function(content) {
         if (socket && socket.connected) {
             socket.emit("post message", content);
@@ -90,6 +127,7 @@ const Socket = (function() {
             socket.emit("typing");
         }
     };
+*/
 
-    return { getSocket, connect, disconnect, postMessage, msgTyping };
+    return { getSocket, connect, createRoom, joinRoom, disconnect};
 })();

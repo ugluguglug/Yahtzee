@@ -14,12 +14,12 @@ const Authentication = (function() {
     //                 request is successful in this form `onSuccess()`
     // * `onError`   - This is a callback function to be called when the
     //                 request fails in this form `onError(error)`
-    const signin = function(email, password, onSuccess, onError) {
+    const signin = function(username, password, onSuccess, onError) {
 
         //
         // A. Preparing the user data
         //
-        let data = {"email": email, "password": password};
+        let data = {"username": username, "password": password};
 
         //
         // B. Sending the AJAX request to the server
