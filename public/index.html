@@ -253,12 +253,13 @@
     <!-- front page end -->
     <!-- game page start-->
     <div id="game-page" class="game-page">
-      <h1> Game Page </h1>
-      <div id="pair-up-container">
-
-        <div id="initialScreen" class="container">
+      <div class="pair-up-container">
+        <h1> Game Page </h1>
+        <div id="initialScreen" class="container green-box">
+            <h2>  <h2>
             <h2 id="game-page-username" class="game-page-username">
-              <span>Welcome, </span>span><span class="username-text"></span>
+                <span>Welcome, </span>
+                <span class="username-text"></span>
             </h2>   
           <button
             type="submit"
@@ -280,17 +281,41 @@
           </button>
         </div>
 
-        <div id="gameScreen" class="h-100">
-          <div class="d-flex flex-column align-items-center justify-content-center h-100">
+        <div id="createNewGame" class="h-100">
+          <div class="container green-box">
   
             <h1>Your game code is: <span id="gameCodeDisplay"></span></h1>
+            <h4>Waiting for player... </h4>
   
             <canvas id="canvas"></canvas>
           </div>
         </div>
 
-
       </div>
+
+      <div id="gameScreen" class="h-100">
+        <div class="d-flex flex-column align-items-center justify-content-center h-100">
+
+          <canvas id="canvas"></canvas>
+        </div>
+      </div>
+
+      <div id="leaderboard" class="container">
+        <table id="leaderboard-table" class="leaderboard-table striped">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Username</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+        
+          </tbody>
+        </table>
+      </div>
+
+      
     </div>
     <!--game page end-->>
     <!-- Javascript files-->
