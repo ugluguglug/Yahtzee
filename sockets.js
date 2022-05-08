@@ -1,6 +1,8 @@
 const fs = require('fs');
 
+// {username: {socketId: sid}}
 const onlineUsers = {};
+// {roomId: {owner: username, player: 1}}
 const rooms = {};
 
 function randomRoomId(username) {
@@ -8,7 +10,7 @@ function randomRoomId(username) {
 
     // If roomId in use
     if (roomId in rooms) {
-        console.log("Crashed roomId")
+        console.log("Crashed roomId, generating new roomId")
         return false;
     } else {
         rooms[roomId] = { owner: username, player: 1 };
@@ -17,11 +19,40 @@ function randomRoomId(username) {
     }
 }
 
-// function getOwnerByRoomId(rooms, roomId) {
-//     for (const room of rooms) {
-//         if (room.owner == )
-//     }
-// }
+function getRoomIdByUsername(rooms, user) {
+    for (const roomId in rooms) {
+        if (rooms[roomId].guest == user || rooms[roomId].owner == user) {
+            // console.log(`[getRoomIdByUsername] User ${user} is in Room ${roomId}`);
+            return roomId;
+        }
+    }
+    return false;
+}
+
+function getOpponent(rooms, user) {
+    let roomId = getRoomIdByUsername(rooms, user);
+    if (!roomId) {
+        // console.log(`[getOpponent] User ${user} is not in any room`);
+        return;
+    }
+
+    if (rooms[roomId].guest == user) {
+        return {
+            opponentName: rooms[roomId].owner,
+            role: 'guest'
+        };
+    }
+    else if (rooms[roomId].owner == user) {
+        return {
+            opponentName: rooms[roomId].guest,
+            role: 'owner'
+        };
+    }
+    else {
+        console.log("[getOpponent] Unexpected case in getOpponent");
+        return;
+    }
+}
 
 exports = module.exports = function (io) {
     io.on("connection", (socket) => {
@@ -32,12 +63,17 @@ exports = module.exports = function (io) {
         if (user) {
             user = user.username;
             onlineUsers[user] = { socketId: socketId };
-            console.log(`User ${user} Socket ${socketId}`);
+            console.log(`New User, username: ${user} socketId: ${socketId}`);
         }
 
         // On create room, message: None, create room give them the number
         socket.on("create room", () => {
-            // TODO: Check if user already owns a room
+            // Check if user already owns a room
+            if (getRoomIdByUsername(rooms, user)) {
+                io.to(socketId).emit("already owns room");
+                console.log(`User ${user} already owns a room`);
+                return;
+            }
 
             // Keep trying to find an empty room
             while (true) {
@@ -57,32 +93,37 @@ exports = module.exports = function (io) {
             let guestName = user;
             let guestId = socketId;
 
-            // check if roomId exists
+            // Check if roomId exists
             if (!(roomId in rooms)) {
                 io.to(guestId).emit("no room");
                 console.log(`Room ${roomId} not found`);
                 return;
             }
 
-            // check if room full
+            // Check if room full
             if (rooms[roomId].player > 1) {
                 io.to(guestId).emit("full room");
                 console.log(`Room ${roomId} is full`);
-                return
+                return;
             }
 
-            // TODO: check if user is the owner
+            // Check if owner is joining own room
+            if (getRoomIdByUsername(rooms, user)) {
+                io.to(guestId).emit("already owns room");
+                console.log(`User ${user} already owns a room`);
+                return;
+            }
 
             // After passing all checks
             let ownerName = rooms[roomId].owner;
             let ownerId = onlineUsers[ownerName].socketId;
 
-            // Increment player count in room
+            // Update room condition
             rooms[roomId].player += 1;
+            rooms[roomId].guest = user;
 
-            // Tell room owner to start game
+            // Tell room owner / guest to start game
             io.to(ownerId).emit("start game", guestName);
-            // Tell room guest to start game
             io.to(guestId).emit("start game", ownerName);
 
             console.log(`${guestName} joined ${ownerName} @ room ${roomId}`);
@@ -90,9 +131,6 @@ exports = module.exports = function (io) {
 
         // On dice roll, Message: dices(array), send to partner
         socket.on("dice roll", (data) => {
-            // let allDices = data.allDices;
-            // let selectedDices = data.selectedDices;
-
             // Find opponentSocketId from name 
             let opponent = data.opponent;
             opponentSocket = onlineUsers[opponent].socketId
@@ -105,9 +143,6 @@ exports = module.exports = function (io) {
 
         // On score updates
         socket.on("score", (data) => {
-            // let category = data.category;
-            // let score = data.score;
-
             // Find opponentSocketId from name 
             let opponent = data.opponent;
             opponentSocket = onlineUsers[opponent].socketId
@@ -129,13 +164,53 @@ exports = module.exports = function (io) {
             console.log(`Receive gameover from ${user}, score: ${score}`);
         })
 
+        // On restart
+        socket.on("rematch", () => {
+            const { opponentName, role } = getOpponent(rooms, user);
+            const opponentSocket = onlineUsers[opponentName].socketId
+
+            io.to(opponentSocket).emit("rematch request");
+        })
+
+        // On quit
+        socket.on("quit", () => {
+            const { opponentName, role } = getOpponent(rooms, user);
+            const opponentSocket = onlineUsers[opponentName].socketId
+
+            const roomId = getRoomIdByUsername(rooms, user);
+
+            if (role == "owner") {
+                console.log(`Deleting room ${roomId} owned by ${user}`);
+                delete rooms[roomId];
+                io.to(opponentSocket).emit("owner quit");
+            }
+            else if (role == "guest") {
+                console.log(`Guest leaving ${user} from Room ${roomId}`);
+                delete rooms[roomId].guest;
+                rooms[roomId].player -= 1;
+                io.to(opponentSocket).emit("guest quit");
+            }
+        })
+
         // On get highscore, return sorted object with user name and highscore
         socket.on("get highscore", () => {
             const users = JSON.parse(fs.readFileSync("./database/users.json"));
             for (const key in users) {
                 delete users[key].password;
             }
-            io.to(socketId).emit("highscores", users);
+
+            // Sort the scores
+            let sortable = [];
+            for (const username in users) {
+                sortable.push([username, users[username].highscore]);
+            }
+            sortable.sort((a, b) => {
+                return b[1] - a[1];
+            })
+
+            // Format and send
+            let highscores = { "highscore": sortable };
+            io.to(socketId).emit("highscores", highscores);
         })
 
         socket.on("debug", () => {
@@ -146,10 +221,37 @@ exports = module.exports = function (io) {
         })
 
         socket.on("disconnect", () => {
-            // Remove from memory
-            delete onlineUsers[user];
+            // Check if the user was inside a room, if yes, notify opponent
+            const roomId = getRoomIdByUsername(rooms, user);
 
-            // TODO: check if the user was inside a room, if yes, notify opponent
+            if (!roomId) {
+                delete onlineUsers[user];
+                console.log(`User ${user} disconnected`);
+                return;
+            }
+
+            const { opponentName, role } = getOpponent(rooms, user);
+
+            if (!(opponentName && role)) {
+                console.log("No opponentName and role returned");
+            }
+
+            if (role == "owner") {
+                console.log(`Deleting room ${roomId} owned by ${user}`);
+                delete rooms[roomId];
+            }
+            else if (role == "guest") {
+                console.log(`Removing guest ${user} from Room ${roomId}`);
+                delete rooms[roomId].guest;
+                rooms[roomId].player -= 1;
+            }
+
+            const opponentSocket = onlineUsers[opponentName].socketId;
+            io.to(opponentSocket).emit("opponent left");
+
+            // Remove from onlineUsers
+            delete onlineUsers[user];
+            console.log(`Disconnected User ${user} successfully`);
         });
 
         // Notify other users that this guy joined

@@ -1,15 +1,15 @@
 {
  "1": {
   "password": "$2b$10$RL8OV6E9DhK41JMF34uGyOz8sJl1uOBUw8mj1XKeT8stKJ1TOLQ2C",
-  "highscore": 0
+  "highscore": 1
  },
  "2": {
   "password": "$2b$10$/EXRKjO0MEez6I.ASdTiU.B1CUjDX8xhYiEvh.ua7izY7z7QE4ufq",
-  "highscore": 0
+  "highscore": 10
  },
  "abc": {
   "password": "$2b$10$neYhgJciv2pYxz4NcDfIr.kYB4aptIctblVkSvOAL6GIAQrVQ1ooy",
-  "highscore": 0
+  "highscore": 100
  },
  "bac": {
   "password": "$2b$10$dfqvKdhd.nzHkQO2P8cj2.kCwXD60TaQFW1I2GoNBv/30HT7TxO8e",
