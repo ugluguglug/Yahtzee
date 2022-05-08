@@ -49,7 +49,7 @@ function getOpponent(rooms, user) {
         };
     }
     else {
-        console.log("[getOpponent] Unexpected case in getOpponent");
+        console.log("[ERROR] Unexpected case in getOpponent");
         return;
     }
 }
@@ -175,19 +175,34 @@ exports = module.exports = function (io) {
         // On quit
         socket.on("quit", () => {
             const { opponentName, role } = getOpponent(rooms, user);
-            const opponentSocket = onlineUsers[opponentName].socketId
-
             const roomId = getRoomIdByUsername(rooms, user);
+
+            // If user quite without room
+            if (!roomId) {
+                console.log(`[ERROR ]User ${user} emitted quit without a room`);
+                return;
+            }
 
             if (role == "owner") {
                 console.log(`Deleting room ${roomId} owned by ${user}`);
                 delete rooms[roomId];
-                io.to(opponentSocket).emit("owner quit");
+
+                // If there is no opponent -> must not be guest
+                if (!opponentName) {
+                    console.log(`No opponent found`);
+                }
+                else {
+                    console.log(`User ${user} notifying opponent ${opponentName} on quit`);
+                    const opponentSocket = onlineUsers[opponentName].socketId
+                    io.to(opponentSocket).emit("owner quit");
+                }
             }
             else if (role == "guest") {
                 console.log(`Guest leaving ${user} from Room ${roomId}`);
                 delete rooms[roomId].guest;
                 rooms[roomId].player -= 1;
+
+                const opponentSocket = onlineUsers[opponentName].socketId
                 io.to(opponentSocket).emit("guest quit");
             }
         })
@@ -224,16 +239,18 @@ exports = module.exports = function (io) {
             // Check if the user was inside a room, if yes, notify opponent
             const roomId = getRoomIdByUsername(rooms, user);
 
+            // If user disconnect without room
             if (!roomId) {
                 delete onlineUsers[user];
-                console.log(`User ${user} disconnected`);
+                console.log(`User ${user} disconnected successfully (without room)`);
                 return;
             }
 
             const { opponentName, role } = getOpponent(rooms, user);
 
-            if (!(opponentName && role)) {
-                console.log("No opponentName and role returned");
+            if (!(opponentName || role)) {
+                console.log("[ERROR] No opponentName and role returned");
+                return;
             }
 
             if (role == "owner") {
@@ -246,8 +263,11 @@ exports = module.exports = function (io) {
                 rooms[roomId].player -= 1;
             }
 
-            const opponentSocket = onlineUsers[opponentName].socketId;
-            io.to(opponentSocket).emit("opponent left");
+            if (opponentName) {
+                console.log(`User ${user} notifying opponent ${opponentName} on disconnection`);
+                const opponentSocket = onlineUsers[opponentName].socketId;
+                io.to(opponentSocket).emit("opponent left");
+            }
 
             // Remove from onlineUsers
             delete onlineUsers[user];
