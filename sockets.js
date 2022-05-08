@@ -32,8 +32,11 @@ function getRoomIdByUsername(rooms, user) {
 function getOpponent(rooms, user) {
     let roomId = getRoomIdByUsername(rooms, user);
     if (!roomId) {
-        // console.log(`[getOpponent] User ${user} is not in any room`);
-        return;
+        console.log(`[ERROR] User ${user} is not in any room`);
+        return {
+            opponentName: null,
+            role: null
+        };
     }
 
     if (rooms[roomId].guest == user) {
@@ -50,7 +53,10 @@ function getOpponent(rooms, user) {
     }
     else {
         console.log("[ERROR] Unexpected case in getOpponent");
-        return;
+        return {
+            opponentName: null,
+            role: null
+        };
     }
 }
 
@@ -172,7 +178,7 @@ exports = module.exports = function (io) {
             io.to(opponentSocket).emit("rematch request");
         })
 
-        // On quit
+        // On quit, only need to send quit to opponent
         socket.on("quit", () => {
             const { opponentName, role } = getOpponent(rooms, user);
             const roomId = getRoomIdByUsername(rooms, user);
@@ -236,7 +242,6 @@ exports = module.exports = function (io) {
         })
 
         socket.on("disconnect", () => {
-            // Check if the user was inside a room, if yes, notify opponent
             const roomId = getRoomIdByUsername(rooms, user);
 
             // If user disconnect without room
@@ -248,6 +253,7 @@ exports = module.exports = function (io) {
 
             const { opponentName, role } = getOpponent(rooms, user);
 
+            // Catch error
             if (!(opponentName || role)) {
                 console.log("[ERROR] No opponentName and role returned");
                 return;

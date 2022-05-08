@@ -68,4 +68,10 @@ router.get("/validate", (req, res) => {
     }
 });
 
+// TODO: signout
+app.get("/signout", (req, res) => {
+    delete req.session.user;
+    res.json({ status: "success" });
+});
+
 module.exports = router
