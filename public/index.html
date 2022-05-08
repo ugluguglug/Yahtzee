@@ -24,6 +24,7 @@
       <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css">
       <!-- Tweaks for older IEs-->
       <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css">
+      <link rel="stylesheet" href="css/custom.css">
       <!-- owl stylesheets --> 
       <!--
       <link rel="stylesheet" href="css/owl.carousel.min.css">
@@ -192,7 +193,7 @@
               <div class="row">
                 <div class="col-md-6">
                   <div class="mail_section">
-                    <input id="signin-username" type="text" class="mail_text" placeholder="Email" name="text">
+                    <input id="signin-username" type="text" class="mail_text" placeholder="Username" name="text">
                     <input id="signin-password" type="password" class="mail_text" placeholder="Password" name="text">      
                   </div>
                 </div>
@@ -251,82 +252,303 @@
       <!-- footer section end -->
     </div>
     <!-- front page end -->
-    <!-- game page start-->
-    <div id="game-page" class="game-page">
-      <div class="pair-up-container">
-        <h1> Game Page </h1>
-        <div id="initialScreen" class="container green-box">
-            <h2>  <h2>
-            <h2 id="game-page-username" class="game-page-username">
-                <span>Welcome, </span>
-                <span class="username-text"></span>
-            </h2>   
-          <button
-            type="submit"
-            class="btn btn-success"
-            id="newGameButton"
-          >
-            Create New Game
-          </button>
-          <div>OR</div>
-          <div class="form-group">
-            <input type="text" placeholder="Enter Game Code" id="gameCodeInput"/>
+    <!-- pairup page start-->
+    <div class="dice3-bg">
+      <div id="pairup-page" class="pairup-page">
+        <div class="pair-up-container">
+          <h1 style="text-align:center;font: 80px Arial; font-weight: bold;"> Yahtzee! </h1>
+          <div id="initialScreen" class="container green-box">
+              <h2>  <h2>
+              <h2 id="game-page-username" class="game-page-username">
+                  <span>Welcome, </span>
+                  <span class="username-text"></span>
+              </h2>   
+            <button
+              type="submit"
+              class="btn btn-success"
+              id="newGameButton"
+            >
+              Create New Game
+            </button>
+            <div>OR</div>
+            <div class="form-group">
+              <input type="text" placeholder="Enter Game Code" id="gameCodeInput"/>
+            </div>
+            <button
+              type="submit"
+              class="btn btn-success"
+              id="joinGameButton"
+            >
+              Join Game
+            </button>
           </div>
-          <button
-            type="submit"
-            class="btn btn-success"
-            id="joinGameButton"
-          >
-            Join Game
-          </button>
+
+          <div id="createNewGame" class="h-100">
+            <div class="container green-box">
+    
+              <h1>Your game code is: <span id="gameCodeDisplay"></span></h1>
+              <h4>Waiting for player... </h4>
+    
+              <canvas id="canvas"></canvas>
+            </div>
+          </div>
+
+          <div id="gameStarting" class="h-100">
+            <div class="container green-box">
+    
+              <h1>A new challenger has appeared: <span id="opponentName"></span></h1>
+              <br>
+              <h3>Game starting in</h3>
+              <br>
+              <h1><span id="gameStarting-countdown">5</span></h1>
+
+            </div>
+          </div>
+
+
+
         </div>
 
-        <div id="createNewGame" class="h-100">
-          <div class="container green-box">
-  
-            <h1>Your game code is: <span id="gameCodeDisplay"></span></h1>
-            <h4>Waiting for player... </h4>
-  
+        <div id="gameScreen" class="h-100">
+          <div class="d-flex flex-column align-items-center justify-content-center h-100">
+
             <canvas id="canvas"></canvas>
           </div>
         </div>
 
+        <div id="leaderboard" class="container">
+          <table id="leaderboard-table" class="leaderboard-table striped">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Username</th>
+                <th>Score</th>
+              </tr>
+            </thead>
+            <tbody>
+          
+            </tbody>
+          </table>
+        </div>
+
+        
       </div>
+      <!--pairup page end-->
+      <!--gamepage start-->
+      <div id="game-page" class="game-page">
+        <!--h1 style="text-align:center;font: 80px Arial; font-weight: bold;"> Yahtzee! </h1-->
+        <div id="game-panel" style="border: 10px outset black; margin:auto; width: 90%; height: 800px; background-image: url('images/dice-old.png') ;text-align: center;">
+          <div id="game-play" style="display:inline-block; border: 10px solid rgb(6, 32, 26); margin-top: 20px; width: 45%; height: 90%; background-color: #90D18A; text-align: center; vertical-align: top" >
+            <div id="selected-dice" style="display:inline-block; border: 5px solid rgb(5, 63, 60); width:90%; height: 20%; margin-top:20px; background-color: rgb(211, 243, 233); text-align: center">
+              <div class="sdice" id="sd1"></div>
+              <div class="sdice" id="sd2"></div>
+              <div class="sdice" id="sd3"></div>
+              <div class="sdice" id="sd4"></div>
+              <div class="sdice" id="sd5"></div>
+            </div>
+            <div id="roll-dice" style="display:inline-block; border: 5px solid rgb(14, 1, 1); width:90%; height: 70%; margin-top:20px; text-align: center">
+              <canvas id="rollcv" width="420" height="400"></canvas>
+              <button class="roll-button" id="rollAll">Roll the dice! (3/3)</button>
+            </div>
+          </div>
+          <div id="score-board" style="display:inline-block; border: 10px solid rgb(128, 18, 4); margin-left:10px; margin-top: 20px; width: 45%; height: 90%; background-color: #EFF1B4; vertical-align: top; text-align: center">
+            <table class="score-table" style= "width: 90%; ">
+              <tr>
+                <th style="width:30%">Upper Section</th>
+                <th style="width:35%">You</th>
+                <th style="width:35%">Opponent</th>
+              </tr>
+              <tr>
+                <td><button class="table-button" id="score1">Aces</button></td>
+                <td id="uscore1"></td>
+                <td id="oscore1"></td>
+              </tr>
+              <tr>
+                <td><button class="table-button" id="score2">Twos</button></td>
+                <td id="uscore2"></td>
+                <td id="oscore2"></td>
+              </tr>
+              <tr>
+                <td><button class="table-button" id="score3">Threes</button></td>
+                <td id="uscore3"></td>
+                <td id="oscore3"></td>
+              </tr>
+              <tr>
+                <td><button class="table-button" id="score4">Fours</button></td>
+                <td id="uscore4"></td>
+                <td id="oscore4"></td>
+              </tr>
+              <tr>
+                <td><button class="table-button" id="score5">Fives</button></td>
+                <td id="uscore5"></td>
+                <td id="oscore5"></td>
+              </tr>
+              <tr>
+                <td><button class="table-button" id="score6">Sixes</button></td>
+                <td id="uscore6"></td>
+                <td id="oscore6"></td>
+              </tr>
+              <tr>
+                <td>Upper Total</td>
+                <td id="utscore1" style="color:red; font-weight: bold;"></td>
+                <td id="otscore1" style="color:red; font-weight: bold;"></td>
+              </tr>
+              <tr>
+                <td>Bonus</td>
+                <td id="utscore2" style="color:red;"></td>
+                <td id="otscore2" style="color:red;"></td>
+              </tr>           
+            </table>
 
-      <div id="gameScreen" class="h-100">
-        <div class="d-flex flex-column align-items-center justify-content-center h-100">
+            <table class="score-table" style= "width: 90%; ">
+              <tr>
+                <th style="width:30%">Lower Section</th>
+                <th style="width:35%">You</th>
+                <th style="width:35%">Opponent</th>
+              </tr>
+              <tr>
+                <td><button class="table-button" id="score7">3 of a Kind</button></td>
+                <td id="uscore7"></td>
+                <td id="oscore7"></td>
+              </tr>
+              <tr>
+                <td><button class="table-button" id="score8">4 of a Kind</button></td>
+                <td id="uscore8"></td>
+                <td id="oscore8"></td>
+              </tr>
+              <tr>
+                <td><button class="table-button" id="score9">Full House</button></td>
+                <td id="uscore9"></td>
+                <td id="oscore9"></td>
+              </tr>
+              <tr>
+                <td><button class="table-button" id="score10">S.Straight</button></td>
+                <td id="uscore10"></td>
+                <td id="oscore10"></td>
+              </tr>
+              <tr>
+                <td><button class="table-button" id="score11">L.Straight</button></td>
+                <td id="uscore11"></td>
+                <td id="oscore11"></td>
+              </tr>
+              <tr>
+                <td><button class="table-button" id="score12">YAHTZEE</button></td>
+                <td id="uscore12"></td>
+                <td id="oscore12"></td>
+              </tr>
+              <tr>
+                <td><button class="table-button" id="score13">Chance</button></td>
+                <td id="uscore13"></td>
+                <td id="oscore13"></td>
+              </tr>
+              <tr>
+                <td><b>All Total</b></td>
+                <td id="utscore3" style="color:red; font-weight: bold;"></td>
+                <td id="otscore3" style="color:red; font-weight: bold;"></td>
+              </tr>           
+            </table>
 
-          <canvas id="canvas"></canvas>
+            <button class="turn-button" id="nextr">Finish Round</button>
+            
+          </div>
         </div>
       </div>
-
-      <div id="leaderboard" class="container">
-        <table id="leaderboard-table" class="leaderboard-table striped">
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Username</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody>
-        
-          </tbody>
-        </table>
+      <!--gamepage end-->
+      <!--gameover start-->
+      <div id="gameover-page" class="gameover-page">
+        <div id="game-over-panel" style="border: 10px outset black; margin:auto; width: 90%; height: 800px; background-image: url('images/dice-old.png') ;text-align: center;">
+          <div class ="game-word">GAME OVER!</div>
+          <div class ="leader-board">Leader Board
+            <table class = "leader-table" style="width: 90%;">
+              <tr>
+                <th style="width:20%">Rank</th>
+                <th style="width:50%">Username</th>
+                <th style="width:30%">Score</th>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td id="username1"></td>
+                <td id="userscore1"></td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td id="username2"></td>
+                <td id="userscore2"></td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td id="username3"></td>
+                <td id="userscore3"></td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td id="username4"></td>
+                <td id="userscore4"></td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td id="username5"></td>
+                <td id="userscore5"></td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td id="username6"></td>
+                <td id="userscore6"></td>
+              </tr>
+              <tr>
+                <td>7</td>
+                <td id="username7"></td>
+                <td id="userscore7"></td>
+              </tr>
+              <tr>
+                <td>8</td>
+                <td id="username8"></td>
+                <td id="userscore8"></td>
+              </tr>
+              <tr>
+                <td>9</td>
+                <td id="username9"></td>
+                <td id="userscore9"></td>
+              </tr>
+              <tr>
+                <td>10</td>
+                <td id="username10"></td>
+                <td id="userscore10"></td>
+              </tr>
+            </table>
+          </div>
+          <div class ="result">Result
+            <div class = "final-score">
+              <div class = "final-left">
+                <p class = "score">Your Score: </p>
+                <p class = "score"><span class = "score" id="opponent-username">Uglug</span>'s Score: </p>
+              </div>
+              <div class = "final-right">
+                <p class = "score" id="your-score">100 </p>
+                <p class = "score" id="opponent-score">200</p>
+              </div>
+              <div class = "final-bottom" id="result-condition">
+                YOU LOST!
+              </div>
+              <div id = "gameover-text">             
+              </div>
+            </div>
+            <button id ="leave-button">Leave</button>
+            <button id ="rematch-button">Rematch</button>
+          </div>
+        </div>
       </div>
-
-      
+      <!--gameover end-->
     </div>
-    <!--game page end-->>
     <!-- Javascript files-->
     <script src="js/jquery.min.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/jquery-3.0.0.min.js"></script>
-    <script src="js/plugin.js"></script>
+    <!--script src="js/plugin.js"></script-->
     <!-- sidebar -->
     <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
-    <script src="js/custom.js"></script>
+    <!--script src="js/custom.js"></script-->
     <!-- javascript --> 
     <!--script src="js/owl.carousel.js"></script-->
     <script src="https:cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
@@ -340,16 +562,18 @@
   <script src="scripts/ui.js"></script>
   <script src="scripts/registration.js"></script>
   <script src="scripts/authentication.js"></script>
+  <script src="scripts/dice.js"></script>
+  <script src="scripts/gameplay.js"></script>
+  <script src="scripts/game.js"></script>
+
   <script>
   $(document).ready(function() {
       // Initialize the UI
-      
       UI.initialize();
-    
+
       // Validate the signin
       Authentication.validate(
           () => {
-              FrontPage.hide();
               GamePage.update(Authentication.getUser());
               GamePage.show();
 
@@ -357,6 +581,11 @@
           },
           () => { FrontPage.show(); }
       );
+
+      // $(window).on('beforeunload', function() {
+      //     return "Data will be lost if you leave the page, are you sure?";
+      // });
+
   });
   </script>
 

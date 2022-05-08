@@ -77,19 +77,19 @@ h6 {
 }
 
 h1 {
-     font-size: 24px
+     font-size: 32px
 }
 
 h2 {
-     font-size: 22px
+     font-size: 28px
 }
 
 h3 {
-     font-size: 18px
+     font-size: 24px
 }
 
 h4 {
-     font-size: 16px
+     font-size: 20px
 }
 
 h5 {
@@ -699,7 +699,7 @@ justify-content: center;
      margin-left: 0px;
 }
 .dice_background{
-	   background-size: 100%;
+	 background-size: 100%;
      width: 100%;
      float: left;
      background-image: url(../images/dice-bg-2.png);
@@ -922,13 +922,35 @@ justify-content: center;
      margin-top: 90px; 
 }
 
+#front-page{
+	display: none;
+}
+/* game-page */
+
+.dice3-bg{
+	 background-size: auto;
+     background-image: url(../images/dice-bg-3.png);
+     height: 100%;
+     background-repeat: repeat;
+	 padding-bottom: 50px;
+}
+
 /* initialScreen overlay */
 
-#initialScreen {
-	margin: auto;
+.green-box {
+	margin: center;
+	
     border: 3px solid green;
-    padding: 10px;
+    padding: 20px;
 	text-align: center;
+}
+
+#createNewGame, #gameScreen, #gameStarting, #leaderboard, #game-page, #gameover-page{
+	display: none;
+}
+#gameStarting-countdown{
+	font-weight: bold;
+	font-size: 48px;
 }
 
 .username-text{
@@ -940,6 +962,19 @@ justify-content: center;
 	line-height: normal;
     color: #111111;
 	margin: 0;
+}
+
+.leaderboard-table{
+	margin-top: 20px;
+}
+
+.leaderboard-table thead{
+  background:#111;
+  color:#fff;
+}
+
+.leaderboard-table tr th,.leaderboard-table tr td:nth-child(odd){
+	text-align:center;
 }
 
 

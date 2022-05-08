@@ -52,7 +52,7 @@ const FrontPage = (function() {
 
     // This function shows the form
     const show = function() {
-        $("#front-page").fadeIn(500);
+        $("#front-page").show();                                          ///////////////show
     };
 
     // This function hides the form
@@ -60,7 +60,7 @@ const FrontPage = (function() {
         $("#signin-form").get(0).reset();
         $("#signin-message").text("");
         $("#register-message").text("");
-        $("#front-page").fadeOut(500);
+        $("#front-page").hide();
     };
 
     return { initialize, show, hide };
@@ -75,59 +75,199 @@ const GamePage = (function() {
     const joinGameBtn = document.getElementById('joinGameButton');
     const gameCodeInput = document.getElementById('gameCodeInput');
     const gameCodeDisplay = document.getElementById('gameCodeDisplay');
+    const gameStartingCountdown = document.getElementById('gameStarting-countdown');
+    const opponentNameDisplay = document.getElementById('opponentName');
+
+    const rematchBtn = document.getElementById('rematch-button');
+    const quitBtn = document.getElementById('leave-button');
 
     newGameBtn.addEventListener('click', newGame);
     joinGameBtn.addEventListener('click', joinGame);
-    
+    rematchBtn.addEventListener('click', sendRematch);
+    quitBtn.addEventListener('click', quit);
 
     let gameActive = false;
     let playerNumber;
+    let opponentName;
+    let rematchStatus = 0; 
 
     //Request new room 
     function newGame(){
         Socket.createRoom();
         $("#initialScreen").hide();
-        $("#createNewGame").fadeIn(500);
+        $("#createNewGame").show();
+        playerNumber = 1;
     }
     //Request join game
     function joinGame(){
-        Socket.joinRoom(gameCodeInput);
+        Socket.joinRoom(gameCodeInput.value);
+        console.log(gameCodeInput.value);
+        playerNumber = 2;
+        gameCodeInput.value = ""
+    }
+    //Send Dice roll result to opponent
+    function sendDiceRoll(dice, selDice){
+        let data = {
+            Dice: dice,
+            SelDice: selDice,
+            opponent: opponentName
+        }
+        Socket.sendDice(data);
+        console.log("Send Dice ", data)
+    }
+    
+    function sendScore(score){
+        let data = {
+            Score: score,
+            opponent: opponentName
+        }
+        Socket.sendScore(data);
+        console.log("Send Score ", data)
     }
 
+    function gameover(){
+        let score = Game.getTotalScore();
+        Socket.gameover(score);
+        document.getElementById("opponent-username").innerHTML = opponentName;
+        $("#game-page").hide();
+        $("#gameover-page").show();
+
+    }
+    function sendRematch(){
+        rematchStatus++;
+        console.log("Client sent rematch ",rematchStatus);
+        if(rematchStatus <= 2){
+            Socket.rematch();
+            document.getElementById("gameover-text").innerHTML = "Rematch request sent!";
+            if(rematchStatus ==2){
+                //rematch confirm, start reset and initialize game
+                initRematch();
+            }
+        }        
+    }
+    function backToMain(){
+        $("#gameover-page").hide();
+        $("#initialScreen").show();
+    }
+    function quit(){
+        console.log("Client sent quit ");
+        Socket.quit();
+        $("#gameover-page").hide();
+        $("#initialScreen").show();
+    }
+    
     //Start the game when the 2nd player joined the room
-    function handleInit(number){
-        playerNumber = number
-        initialScreen.style.display = "none"
+    function handleInit(opponent){      
+        $("#initialScreen").hide();
+        $("#createNewGame").hide();
+        $("#gameStarting").show();
+        opponentName = opponent;
+        opponentNameDisplay.innerText = opponentName;
+        let timeleft = 1;
+
+        function countdown(){
+            timeleft = timeleft -1;
+            if(timeleft >0){
+                gameStartingCountdown.innerText = timeleft;
+                setTimeout(countdown, 1000);
+            }else{
+                gameStartingCountdown.innerText = "Start";
+                startGame();
+            }
+        }
+        setTimeout(countdown, 1000);
         //game start here
-
-
+        function startGame(){
+            console.log("Game Start!");
+            Game.init(playerNumber);
+            $("#gameStarting").hide();
+            $("#game-page").show();
+        }
     }
-    function handleGameState(gameState){
-
+    function handleOpponentDice(diceData){
+        let Dice = diceData.Dice;
+        let SelDice = diceData.SelDice;
+        Game.opponentDice(Dice,SelDice);
+        console.log("receive opponent dice");
+        console.log(diceData);
     }
-    function handleGameOver(){
-        
+    function handleOpponentScore(scoreData){
+        let Score = scoreData.Score;
+        Game.opponentScore(Score);
+        console.log("receive opponent score");
+        console.log("opponent score", Score);
     }
 
     function handleGameCode(gameCode){
+        console.log("GameID received "+gameCode);
         gameCodeDisplay.innerText = gameCode;
     }
     function handleUnknownCode(){
-        reset();
-        alert('Unknown Game Code')
+        gameCodeInput.value = "";
+        alert('Unknown Game Code');
     }
     function handleTooManyPlayers(){
-        reset();
+        gameCodeInput.value = "";
         alert('This game is already in progress');
+    }
+    function handleRematch(){
+        
+        rematchStatus++;
+        console.log("Client receive rematch ", rematchStatus);
+        if(rematchStatus == 2){
+            initRematch();
+        }else{
+            document.getElementById("gameover-text").innerHTML = "Your opponent wants to rematch!";
+        }
+    }
+    function initRematch(){
+        $("#gameover-page").hide();
+        $("#gameStarting").show();
+        opponentNameDisplay.innerText = opponentName;
+        rematchStatus = 0;
+        let timeleft = 1;
+
+        function countdown(){
+            timeleft = timeleft -1;
+            if(timeleft >0){
+                gameStartingCountdown.innerText = timeleft;
+                setTimeout(countdown, 1000);
+            }else{
+                gameStartingCountdown.innerText = "Start";
+                startRematch();
+            }
+        }
+        setTimeout(countdown, 1000);
+        //game start here
+        function startRematch(){
+            console.log("Game Start!");
+            Game.newGame(playerNumber);
+            $("#gameStarting").hide();
+            $("#game-page").show();
+        }
+        //Game.reset();
+    }
+    function handleOwnerQuit(){
+        document.getElementById("gameover-text").innerHTML = "Your opponent has left the match :(";
+        rematchBtn.disabled = true;
+        setTimeout(quit, 2000);
+
+    }
+    function handleGuestQuit(){
+        document.getElementById("gameover-text").innerHTML = "Your opponent has left the match :(";
+        rematchBtn.disabled = true;
+        setTimeout(quit, 2000);
+    }
+    function handleHighscores(highscores){
+        //write scoreboard
+
     }
 
     const initialize = function() {
 
-
         // Hide it
-        $("#game-page").hide();
+        $("#pairup-page").hide();
         
-
         // Click event for the signout button
         $("#signout-button").on("click", () => {
             // Send a signout request
@@ -143,29 +283,29 @@ const GamePage = (function() {
 
     // This function shows the form with the user
     const show = function(user) {
-        $("#game-page").fadeIn(500);
-        $("#createNewGame").hide();
-        $("#gameScreen").hide();
-        $("#leaderboard").hide();
-
+        $("#pairup-page").show();
     };
 
     // This function hides the form
     const hide = function() {
-        $("#game-page").fadeOut(500);
+        $("#pairup-page").hide();
     };
 
     // This function updates the user panel
     const update = function(user) {
         if (user) {
-            $("#game-page .username-text").text(user.username);
+            $("#pairup-page .username-text").text(user.username);
         }
         else {
-            $("#game-page .username-text").text("");
+            $("#pairup-page .username-text").text("");
         }
     };
 
-    return { initialize, handleInit, handleGameState, handleGameOver, handleGameCode, handleUnknownCode, handleTooManyPlayers, show, hide, update };
+    return { initialize, handleInit, sendDiceRoll, sendScore, handleOpponentDice, 
+        handleOpponentScore, handleGameCode, handleUnknownCode, 
+        handleTooManyPlayers, show, hide, update,
+        gameover, handleRematch, handleOwnerQuit, handleGuestQuit, handleHighscores
+     };
 })();
 
 
@@ -174,7 +314,7 @@ const UI = (function() {
     const getUserDisplay = function(user) {
         console.log("running getUserDisplay");
         /*
-        return $("<div id='game-page-username' class='game-page-username'></div>")
+        return $("<div id='pairup-page-username' class='pairup-page-username'></div>")
             .append($("<h2 class='username-text'>" + hi + "</h2>"));
         */
     };
@@ -190,5 +330,5 @@ const UI = (function() {
         }
     };
 
-    return { getUserDisplay, initialize };
+    return { getUserDisplay, initialize};
 })();

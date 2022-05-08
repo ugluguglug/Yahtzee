@@ -21,82 +21,49 @@ const Socket = (function() {
             // Get the chatroom messages
             //socket.emit("get messages");
         });
-        socket.on('init', handleInit);
-        socket.on('gameState', handleGameState);
-        socket.on('gameOver', handleGameOver);
-        socket.on('gameCode', handleGameCode);
-        socket.on('unknownCode', handleUnknownCode);
-        socket.on('tooManyPlayers', handleTooManyPlayers);
+        socket.on('start game', handleInit);
+        socket.on('opponent dice', handleOpponentDice);
+        socket.on('opponent score', handleOpponentScore);
+        socket.on('room created', handleGameCode);
+        socket.on('no room', handleUnknownCode);
+        socket.on('full room', handleTooManyPlayers);
 
-        function handleInit(playerNumber){
-            Gamepage.handleInit(playerNumber);
+        socket.on('rematch request', handleRematch);
+        socket.on('owner quit', handleOwnerQuit);
+        socket.on('guest quit', handleGuestQuit);
+        socket.on('highscores', handleHighscores);
+
+        function handleInit(opponentName){
+            GamePage.handleInit(opponentName);
         }
-        function handleGameState(){
-            Gamepage.handleGameState();
-        }
-        function handleGameOver(){
-            Gamepage.handleGameOver();
-        }
-        function handleGameCode(gameCode){
-            Gamepage.handleGameCode(gameCode);
+        function handleGameCode(gameCode){        
+            GamePage.handleGameCode(gameCode);
         }
         function handleUnknownCode(){
-            Gamepage.handleUnknownCode();
+            GamePage.handleUnknownCode();
         }
         function handleTooManyPlayers(){
-            Gamepage.handleTooManyPlayers();
+            GamePage.handleTooManyPlayers();
+        }
+        function handleOpponentDice(opponentDiceData){
+            GamePage.handleOpponentDice(opponentDiceData);
+        }
+        function handleOpponentScore(opponentScore){
+            GamePage.handleOpponentScore(opponentScore);
+        }
+        function handleRematch(){
+            GamePage.handleRematch();
+        }
+        function handleOwnerQuit(){
+            GamePage.handleOwnerQuit();
+        }
+        function handleGuestQuit(){
+            GamePage.handleGuestQuit();
+        }
+        function handleHighscores(highscores){
+            GamePage.handleHighscores(highscores);
         }
 
-        /*
-        // Set up the users event
-        socket.on("users", (onlineUsers) => {
-            onlineUsers = JSON.parse(onlineUsers);
-
-            // Show the online users
-            OnlineUsersPanel.update(onlineUsers);
-        });
-
-        // Set up the add user event
-        socket.on("add user", (user) => {
-            user = JSON.parse(user);
-
-            // Add the online user
-            OnlineUsersPanel.addUser(user);
-        });
-
-        // Set up the remove user event
-        socket.on("remove user", (user) => {
-            user = JSON.parse(user);
-
-            // Remove the online user
-            OnlineUsersPanel.removeUser(user);
-        });
-
-        // Set up the messages event
-        socket.on("messages", (chatroom) => {
-            chatroom = JSON.parse(chatroom);
-
-            // Show the chatroom messages
-            ChatPanel.update(chatroom);
-        });
-
-        // Set up the add message event
-        socket.on("add message", (message) => {
-            message = JSON.parse(message);
-
-            // Add the message to the chatroom
-            ChatPanel.addMessage(message);
-        });
-
-        socket.on("typing broadcast", (name) => {
-            ChatPanel.updateTyping(name);
-
-            clearTimeout(typingTimeout);
-            typingTimeout = setTimeout(() => {
-                ChatPanel.clearTyping();
-            }, 3000);
-        })
-        */
     };
 
     const createRoom = function() {
@@ -108,7 +75,23 @@ const Socket = (function() {
         socket.emit("join room", roomID);
         console.log("Join room from client");
     }
-
+    const sendDice = function(data){
+        socket.emit("dice roll",data);
+        console.log("dice sent by client");
+    }
+    const sendScore = function(data){
+        socket.emit("score", data);
+        console.log("score sent by client");
+    }
+    const gameover = function(score){
+        socket.emit("game over", score);
+    }
+    const rematch = function(){
+        socket.emit("rematch");
+    }
+    const quit = function(){
+        socket.emit("quit");
+    }
     // This function disconnects the socket from the server
     const disconnect = function() {
         socket.disconnect();
@@ -129,5 +112,6 @@ const Socket = (function() {
     };
 */
 
-    return { getSocket, connect, createRoom, joinRoom, disconnect};
+    return { getSocket, connect, createRoom, joinRoom, sendDice, 
+        sendScore, gameover, rematch, quit, disconnect};
 })();

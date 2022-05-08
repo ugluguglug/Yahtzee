@@ -1,0 +1,219 @@
+button:disabled,
+button[disabled]{
+  border: 1px solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+  pointer-events: none;
+
+}
+
+.sdice{
+    display: inline-block;
+    border-radius: 5%;
+    height: 75px;
+    width: 75px;
+    margin: 20px auto;
+    background-size: cover;
+}
+
+#rollcv{
+    border: 2px solid black;
+    margin-top: 20px;
+}
+
+.score-table{
+    border: 2px solid black;
+    border-collapse: collapse;
+    background-color: white;
+    margin: 20px auto;
+
+}
+
+.score-table tr td {
+    border: 1px solid black;
+    color: black;
+}
+
+.score-table tr th {
+    border: 1px solid black;
+    font: bold;
+    color: black;
+}
+
+.turn-button{
+    background-color: darkgreen;
+    color: white;
+    border: 5px solid black;
+    width: 150px;
+    height: 60px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.roll-button{
+    background-color: darkred;
+    color: white;
+    border: 5px solid black;
+    width: 300px;
+    height: 60px;
+    text-align: center;
+    display: inline-block;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.table-button{
+    background-color: aquamarine;
+    border: 1px solid green;
+    width: 120px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.game-word{
+    background-color: whitesmoke;
+    color: darkred;
+    border: 5px solid black;
+    width: 80%;
+    text-align: center;
+    font-size: 60px;
+    font-weight: bold;
+    display: inline-block;
+    margin: auto;
+    margin-top: 20px;
+}
+
+.leader-board{
+    background-color: palegoldenrod;
+    color: black;
+    border: 5px solid black;
+    text-align: center;
+    font-size: 25px;
+    font-weight: bold;
+    width: 45%;
+    height: 70%;
+    display: inline-block;
+    margin: auto;
+    margin-top: 20px;
+    vertical-align: top
+}
+
+.result{
+    background-color: rgb(255, 235, 239);
+    color: black;
+    border: 5px solid black;
+    text-align: center;
+    font-size: 25px;
+    font-weight: bold;
+    width: 45%;
+    height: 70%;
+    display: inline-block;
+    margin: auto;
+    margin-top: 20px;
+    vertical-align: top
+}
+
+.leader-table{
+    border: 2px solid black;
+    border-collapse: collapse;
+    background-color: white;
+    margin: 20px auto;
+    font-size: 20px;
+
+}
+
+.leader-table tr td {
+    border: 1px solid black;
+    color: black;
+}
+
+.leader-table tr th {
+    border: 1px solid black;
+    font: bold;
+    color: black;
+    
+}
+
+.final-score{
+    background-color: aliceblue;
+    border: 5px solid black;
+    text-align: center; 
+    width: 90%;
+    height: 60%;
+    display: inline-block;
+    margin: auto;
+    margin-top: 20px; 
+
+}
+
+.final-left{
+
+    width: 60%;
+    height: 40%;
+    display: inline-block;
+    text-align: right;
+    vertical-align: top;
+    margin-top: 30px; 
+}
+
+.final-right{
+
+    width: 38%;
+    height: 40%;
+    display: inline-block;
+    text-align: left; 
+    vertical-align: top;
+    margin-top: 30px;
+}
+
+.final-bottom{
+
+    width: 100%;
+    height: 30%;
+    display: inline-block;
+    text-align: center; 
+    font-size: 40px;
+    font-weight: bold;
+    color: rgb(87, 8, 45);
+    margin-top: 20px;
+
+}
+
+.score{
+    font-size: 25px;
+    font-weight: bold;
+    color: black;
+}
+
+#leave-button{
+    background-color: darkred;
+    color: white;
+    border: 5px solid black;
+    width: 150px;
+    height: 60px;
+    text-align: center;
+    display: inline-block;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 40px;
+}
+
+#rematch-button{
+    background-color: rgb(5, 90, 30);
+    color: white;
+    border: 5px solid black;
+    width: 150px;
+    height: 60px;
+    text-align: center;
+    display: inline-block;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 40px;
+}
+
+#gameover-text{
+    font-size: 20px;
+    color: darkmagenta;
+}
