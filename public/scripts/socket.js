@@ -92,6 +92,9 @@ const Socket = (function() {
     const quit = function(){
         socket.emit("quit");
     }
+    const getHighscore = function(){
+        socket.emit("get highscore");
+    }
     // This function disconnects the socket from the server
     const disconnect = function() {
         socket.disconnect();
@@ -113,5 +116,5 @@ const Socket = (function() {
 */
 
     return { getSocket, connect, createRoom, joinRoom, sendDice, 
-        sendScore, gameover, rematch, quit, disconnect};
+        sendScore, gameover, getHighscore, rematch, quit, disconnect};
 })();

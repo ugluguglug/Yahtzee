@@ -20,7 +20,7 @@ const Game = (function(){
       function init(playerNo){
         if (playerNo==1){
           myTurn = true;
-          
+          document.getElementById("rollAll").disabled = false;
         }
         else {
           myTurn = false;
@@ -268,7 +268,7 @@ const Game = (function(){
           document.getElementById("rollAll").disabled = false;
         }
         console.log("roundCount: ", roundCount);
-        if(roundCount==2){   //26
+        if(roundCount==26){   //26
           document.getElementById("your-score").innerHTML = document.getElementById("utscore3").innerHTML;
           document.getElementById("opponent-score").innerHTML = document.getElementById("otscore3").innerHTML;
           let ut = parseInt(document.getElementById("your-score").innerHTML);
@@ -395,7 +395,7 @@ const Game = (function(){
         document.getElementById("rollAll").disabled = false;
 
         console.log("roundCount: ", roundCount);
-        if(roundCount==2){  ////26
+        if(roundCount==26){  ////26
           document.getElementById("your-score").innerHTML = document.getElementById("utscore3").innerHTML;
           document.getElementById("opponent-score").innerHTML = document.getElementById("otscore3").innerHTML;
           let ut = parseInt(document.getElementById("your-score").innerHTML);
