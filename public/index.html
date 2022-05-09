@@ -19,7 +19,7 @@
       <!-- Responsive-->
       <link rel="stylesheet" href="css/responsive.css">
       <!-- fevicon -->
-      <link rel="icon" href="images/fevicon.png" type="image/gif" />
+      <link rel="icon" href="images/fevicon.ico" type="image/ico" />
       <!-- Scrollbar Custom CSS -->
       <link rel="stylesheet" href="css/jquery.mCustomScrollbar.min.css">
       <!-- Tweaks for older IEs-->
@@ -106,7 +106,7 @@
                                 <p class="lorem_text">
                                   The game consists of a number of rounds. In each round, a player gets three rolls of the dice, although they can choose to end their turn after one or two rolls. After the first roll the player can save any dice they want and re-roll the other dice. This procedure is repeated after the second roll. The player has complete choice as to which dice to roll. It is possible to re-roll both dice that were or were not rolled before. 
                                 </p>
-                                <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
+                                <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide-to="3">
                                   <i class="fa fa-long-arrow-up"></i>
                                 </a>
                                 <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
@@ -172,7 +172,7 @@
                                 <a class="carousel-control-prev" href="#myCarousel" role="button" data-slide="prev">
                                   <i class="fa fa-long-arrow-up"></i>
                                 </a>
-                                <a class="carousel-control-next" href="#myCarousel" role="button" data-slide="next">
+                                <a class="carousel-control-next" href="#myCarousel" role="button" data-slide-to="0">
                                   <i class="fa fa-long-arrow-down"></i>
                                 </a>
                               </div>
@@ -252,87 +252,67 @@
       <!-- footer section end -->
     </div>
     <!-- front page end -->
-    <!-- pairup page start-->
-    <div class="dice3-bg">
-      <div id="pairup-page" class="pairup-page">
-        <div class="pair-up-container">
-          <h1 style="text-align:center;font: 80px Arial; font-weight: bold;"> Yahtzee! </h1>
-          <div id="initialScreen" class="container green-box">
-              <h2>  <h2>
-              <h2 id="game-page-username" class="game-page-username">
-                  <span>Welcome, </span>
-                  <span class="username-text"></span>
-              </h2>   
-            <button
-              type="submit"
-              class="btn btn-success"
-              id="newGameButton"
-            >
-              Create New Game
-            </button>
-            <div>OR</div>
-            <div class="form-group">
-              <input type="text" placeholder="Enter Game Code" id="gameCodeInput"/>
+    <div id="pairup-page" class="pairup-page dice3-bg">
+      <!-- pairup page start-->
+      
+          <div class="pair-up-container">
+            <h1 style="text-align:center;font: 80px Arial; font-weight: bold;"> Yahtzee! </h1>
+            <div id="initialScreen" class="container green-box">
+                <h2>  <h2>
+                <h2 id="game-page-username" class="game-page-username">
+                    <span>Welcome, </span>
+                    <span class="username-text"></span>
+                </h2>   
+              <button
+                type="submit"
+                class="btn btn-success"
+                id="signoutButton"
+              >
+                Sign Out
+              </button>
+              <button
+                type="submit"
+                class="btn btn-success"
+                id="newGameButton"
+              >
+                Create New Game
+              </button>
+              <div>OR</div>
+              <div class="form-group">
+                <input type="text" placeholder="Enter Game Code" id="gameCodeInput"/>
+              </div>
+              <button
+                type="submit"
+                class="btn btn-success"
+                id="joinGameButton"
+              >
+                Join Game
+              </button>
             </div>
-            <button
-              type="submit"
-              class="btn btn-success"
-              id="joinGameButton"
-            >
-              Join Game
-            </button>
-          </div>
 
-          <div id="createNewGame" class="h-100">
-            <div class="container green-box">
-    
-              <h1>Your game code is: <span id="gameCodeDisplay"></span></h1>
-              <h4>Waiting for player... </h4>
-    
-              <canvas id="canvas"></canvas>
+            <div id="createNewGame" class="h-100">
+              <div class="container green-box">
+      
+                <h1>Your game code is: <span id="gameCodeDisplay"></span></h1>
+                <h4>Waiting for player... </h4>
+      
+                <canvas id="canvas"></canvas>
+              </div>
             </div>
-          </div>
 
-          <div id="gameStarting" class="h-100">
-            <div class="container green-box">
-    
-              <h1>A new challenger has appeared: <span id="opponentName"></span></h1>
-              <br>
-              <h3>Game starting in</h3>
-              <br>
-              <h1><span id="gameStarting-countdown">5</span></h1>
-
+            <div id="gameStarting" class="h-100">
+              <div class="container green-box">
+      
+                <h1>A new challenger has appeared: <span id="opponentName"></span></h1>
+                <br>
+                <h3>Game starting in</h3>
+                <br>
+                <h1><span id="gameStarting-countdown">6</span></h1>
+                <canvas id="small-canvas"></canvas>
+              </div>
             </div>
+
           </div>
-
-
-
-        </div>
-
-        <div id="gameScreen" class="h-100">
-          <div class="d-flex flex-column align-items-center justify-content-center h-100">
-
-            <canvas id="canvas"></canvas>
-          </div>
-        </div>
-
-        <div id="leaderboard" class="container">
-          <table id="leaderboard-table" class="leaderboard-table striped">
-            <thead>
-              <tr>
-                <th>Rank</th>
-                <th>Username</th>
-                <th>Score</th>
-              </tr>
-            </thead>
-            <tbody>
-          
-            </tbody>
-          </table>
-        </div>
-
-        
-      </div>
       <!--pairup page end-->
       <!--gamepage start-->
       <div id="game-page" class="game-page">
@@ -533,8 +513,9 @@
               <div id = "gameover-text">             
               </div>
             </div>
-            <button id ="leave-button">Leave</button>
-            <button id ="rematch-button">Rematch</button>
+            <button id ="quit-button" class="endgame-button quit-button">Quit Game</button>
+            <button id ="leave-button" class="endgame-button leave-button">Leave</button>
+            <button id ="rematch-button" class="endgame-button rematch-button">Rematch</button>           
           </div>
         </div>
       </div>
@@ -542,7 +523,7 @@
     </div>
     <!-- Javascript files-->
     <script src="js/jquery.min.js"></script>
-    <script src="js/popper.min.js"></script>
+    <!--script src="js/popper.min.js"></script-->
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/jquery-3.0.0.min.js"></script>
     <!--script src="js/plugin.js"></script-->
