@@ -79,20 +79,41 @@ const GamePage = (function() {
     const opponentNameDisplay = document.getElementById('opponentName');
 
     const rematchBtn = document.getElementById('rematch-button');
-    const quitBtn = document.getElementById('leave-button');
+    const leaveBtn = document.getElementById('leave-button');
+    const quitBtn = document.getElementById('quit-button');
 
     newGameBtn.addEventListener('click', newGame);
     joinGameBtn.addEventListener('click', joinGame);
     rematchBtn.addEventListener('click', sendRematch);
-    quitBtn.addEventListener('click', quit);
+    leaveBtn.addEventListener('click', leave);
+    quitBtn.addEventListener('click', quit); 
 
     let gameActive = false;
     let playerNumber;
     let opponentName;
     let rematchStatus = 0; 
+    let click_sound = new Audio('./music/button-click.mp3');
+    let match_found_sound = new Audio("./music/league_match_found.mp3");
+    let rematch_sound = new Audio("./music/challenger_approaching.mp3");
+    let gameover_sound = new Audio("./music/valorant_win.mp3");
+    let ingame_sound = new Audio("./music/suwako_theme.mp3");
+    let opponent_quit_sound = new Audio("./music/you_died.mp3");
+
 
     //Request new room 
+    function reset(){
+        gameStartingCountdown.innerText = "6";
+        rematchStatus = 0;
+        document.getElementById("gameover-text").innerHTML = "";
+        document.getElementById('rematch-button').disabled = false;
+        for(let i=0; i<10;i++){
+            document.getElementById("username"+(i+1)).innerHTML = "";
+            document.getElementById("userscore"+(i+1)).innerHTML = "";
+        }
+
+    }
     function newGame(){
+        click_sound.play();
         Socket.createRoom();
         $("#initialScreen").hide();
         $("#createNewGame").show();
@@ -100,10 +121,11 @@ const GamePage = (function() {
     }
     //Request join game
     function joinGame(){
+        click_sound.play();
         Socket.joinRoom(gameCodeInput.value);
         console.log(gameCodeInput.value);
         playerNumber = 2;
-        gameCodeInput.value = ""
+        gameCodeInput.value = "";
     }
     //Send Dice roll result to opponent
     function sendDiceRoll(dice, selDice){
@@ -126,14 +148,20 @@ const GamePage = (function() {
     }
 
     function gameover(){
+        ingame_sound.animate({volume: 0}, 1000);
+        setTimeout(ingame_sound.pause());
+        gameover_sound.play();
         let score = Game.getTotalScore();
         Socket.gameover(score);
+        setTimeout(Socket.getHighscore, 500);
         document.getElementById("opponent-username").innerHTML = opponentName;
         $("#game-page").hide();
         $("#gameover-page").show();
 
     }
     function sendRematch(){
+        click_sound.play();
+        document.getElementById("rematch-button").disabled = true;
         rematchStatus++;
         console.log("Client sent rematch ",rematchStatus);
         if(rematchStatus <= 2){
@@ -149,11 +177,25 @@ const GamePage = (function() {
         $("#gameover-page").hide();
         $("#initialScreen").show();
     }
-    function quit(){
-        console.log("Client sent quit ");
+    function leave(){
+        click_sound.play();
+        console.log("Client sent leave ");
         Socket.quit();
         $("#gameover-page").hide();
         $("#initialScreen").show();
+    }
+    function quit(){
+        click_sound.play();
+        console.log("Client sent quit");
+        Socket.quit();
+        $("#gameover-page").hide();
+        Authentication.signout(
+            () => {
+                Socket.disconnect();
+                hide();
+                FrontPage.show();
+            }
+        );
     }
     
     //Start the game when the 2nd player joined the room
@@ -161,9 +203,11 @@ const GamePage = (function() {
         $("#initialScreen").hide();
         $("#createNewGame").hide();
         $("#gameStarting").show();
+        match_found_sound.play();
+
         opponentName = opponent;
         opponentNameDisplay.innerText = opponentName;
-        let timeleft = 1;
+        let timeleft = 6;
 
         function countdown(){
             timeleft = timeleft -1;
@@ -171,7 +215,7 @@ const GamePage = (function() {
                 gameStartingCountdown.innerText = timeleft;
                 setTimeout(countdown, 1000);
             }else{
-                gameStartingCountdown.innerText = "Start";
+                gameStartingCountdown.innerText = "";
                 startGame();
             }
         }
@@ -179,7 +223,12 @@ const GamePage = (function() {
         //game start here
         function startGame(){
             console.log("Game Start!");
-            Game.init(playerNumber);
+            reset();
+            Game.newGame(playerNumber);
+            ingame_sound.volume = 0.06;
+            ingame_sound.loop = true;
+            ingame_sound.currentTime = 0;
+            ingame_sound.play();
             $("#gameStarting").hide();
             $("#game-page").show();
         }
@@ -223,9 +272,10 @@ const GamePage = (function() {
     function initRematch(){
         $("#gameover-page").hide();
         $("#gameStarting").show();
+        reset();
+        rematch_sound.play();
         opponentNameDisplay.innerText = opponentName;
-        rematchStatus = 0;
-        let timeleft = 1;
+        let timeleft = 6;
 
         function countdown(){
             timeleft = timeleft -1;
@@ -233,7 +283,7 @@ const GamePage = (function() {
                 gameStartingCountdown.innerText = timeleft;
                 setTimeout(countdown, 1000);
             }else{
-                gameStartingCountdown.innerText = "Start";
+                gameStartingCountdown.innerText = "";
                 startRematch();
             }
         }
@@ -242,6 +292,10 @@ const GamePage = (function() {
         function startRematch(){
             console.log("Game Start!");
             Game.newGame(playerNumber);
+            ingame_sound.volume = 0.06;
+            ingame_sound.loop = true;
+            ingame_sound.currentTime = 0;
+            ingame_sound.play();
             $("#gameStarting").hide();
             $("#game-page").show();
         }
@@ -249,17 +303,35 @@ const GamePage = (function() {
     }
     function handleOwnerQuit(){
         document.getElementById("gameover-text").innerHTML = "Your opponent has left the match :(";
-        rematchBtn.disabled = true;
-        setTimeout(quit, 2000);
+        document.getElementById("rematch-button").disabled = true;
+        opponent_quit_sound.play();
 
     }
     function handleGuestQuit(){
         document.getElementById("gameover-text").innerHTML = "Your opponent has left the match :(";
-        rematchBtn.disabled = true;
-        setTimeout(quit, 2000);
+        document.getElementById("rematch-button").disabled = true;
+        opponent_quit_sound.play();
     }
     function handleHighscores(highscores){
         //write scoreboard
+        console.log("highsocres received: ",highscores);
+        if(highscores == null){
+            return;
+        }
+        const object = Object.values(highscores);
+        console.log("object: ",object);
+        const highScoreArray = object[0];
+        console.log("highScoreArray: ",highScoreArray);
+
+        let length = highScoreArray.length;
+        console.log("length: ",length);
+        if(length > 10){
+            length = 10;
+        }
+        for(let i=0; i<length;i++){
+            document.getElementById("username"+(i+1)).innerHTML = highScoreArray[i][0];
+            document.getElementById("userscore"+(i+1)).innerHTML = highScoreArray[i][1] ;
+        }
 
     }
 
@@ -269,21 +341,28 @@ const GamePage = (function() {
         $("#pairup-page").hide();
         
         // Click event for the signout button
-        $("#signout-button").on("click", () => {
+        $("#signoutButton").on("click", () => {
+            click_sound.play();
             // Send a signout request
             Authentication.signout(
                 () => {
                     Socket.disconnect();
-                    hide();
+                    $("#pairup-page").hide();
                     FrontPage.show();
                 }
             );
         });
+        $("#pairup-page").on("keydown", function(event) {
+            if(event.keyCode == 13 ){
+                joinGame();
+            }
+          });
     };
 
     // This function shows the form with the user
     const show = function(user) {
         $("#pairup-page").show();
+        $("#initialScreen").show();
     };
 
     // This function hides the form

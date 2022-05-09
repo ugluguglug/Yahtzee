@@ -10,4 +10,4 @@ Top 10 players with the highest score in a singel game will be shown on the lead
 Press 'c' to roll dice indefinitely
 
 ## Brought to you by
-CHUNG Yuen Man, CHONG Kai Ching, Lam San Bok
+Endercraft00, Uglug and 426
