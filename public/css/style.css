@@ -768,7 +768,7 @@ justify-content: center;
 
 .send_bt {
 	background-color: #eac208;
-	color: #fefeff;
+	color: #000;
 	text-align: center;
 	padding: 10px 0px;
 	font-size: 20px;	
@@ -892,11 +892,11 @@ justify-content: center;
 #myCarousel a.carousel-control-prev {
     position: relative;
 	margin-top: 10px;
-	margin-left: 10px;
+	margin-left: 30px;
     background-color: #f8ca12;
 }
 
-#myCarousel .carousel-control-prev:hover, #myCarousel .carousel-control-next:hover, #myCarousel .carousel-control-prev:focus, #myCarousel .carousel-control-next:focus {
+#myCarousel .carousel-control-prev:hover, #myCarousel .carousel-control-next:hover, #myCarousel .carousel-control-prev:focus, #myCarousel .carousel-control-next:focus, .send_bt:hover , .send_bt:focus{
     background: #f8ca12;
     color: #fff;
 }
@@ -904,8 +904,8 @@ justify-content: center;
 #myCarousel a.carousel-control-next {
     position: relative;
 	margin-top: 10px;
-	margin-left: 300px;
-    right: 95px;
+	
+    left: 280px;
 }
 #myCarousel .carousel-control-prev, #myCarousel .carousel-control-next {
     width: 65px;
@@ -926,20 +926,53 @@ justify-content: center;
 	display: none;
 }
 /* game-page */
-
+.btn-success:hover, btn-success:focus{
+	color: #FFF;
+}
+.btn-success{
+	color: #000;
+}
 .dice3-bg{
-	 background-size: auto;
+	 //background-size: auto;
      background-image: url(../images/dice-bg-3.png);
-     height: 100%;
+
      background-repeat: repeat;
 	 padding-bottom: 50px;
+	 
+	 min-height: 100%;
+	 min-width: 1024px;
+	
+	 /* Set up proportionate scaling */
+	 width: 100%;
+	 height: auto;
+	
+ 	/* Set up positioning */
+	 position: fixed;
+	 top: 0;
+	 left: 0;
+	 z-index = -1;
 }
 
+#joinGameButton{
+	margin-bottom: 27px;
+}
+#gameStarting-countdown{
+	margin-bottom: 57px;
+}
 /* initialScreen overlay */
+#signoutButton{
+	margin-top: 5px;
+     margin-left: 7px;
+     position:absolute;
+     top:0;
+     left:0;
+}
 
+#small-canvas{
+	height: 30px;
+}
 .green-box {
 	margin: center;
-	
     border: 3px solid green;
     padding: 20px;
 	text-align: center;
