@@ -225,7 +225,7 @@ const GamePage = (function() {
             console.log("Game Start!");
             reset();
             Game.newGame(playerNumber);
-            ingame_sound.volume = 0.1;
+            ingame_sound.volume = 0.06;
             ingame_sound.loop = true;
             ingame_sound.currentTime = 0;
             ingame_sound.play();
@@ -292,7 +292,7 @@ const GamePage = (function() {
         function startRematch(){
             console.log("Game Start!");
             Game.newGame(playerNumber);
-            ingame_sound.volume = 0.1;
+            ingame_sound.volume = 0.06;
             ingame_sound.loop = true;
             ingame_sound.currentTime = 0;
             ingame_sound.play();
