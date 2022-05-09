@@ -144,7 +144,7 @@ const Game = (function(){
                   GamePage.sendDiceRoll(diceInfo(dice),selDice);        //send dice info to opponent
                     if(selDice.length!=5 && readyCheck == true){
                       readyCheck = false;
-                      updateCheck(readyCheck, diceArr, selDice); 
+                      updateCheck(readyCheck, diceArr, selDice, selScore); 
                     }
               }
             }
@@ -158,7 +158,7 @@ const Game = (function(){
         currentBut.onclick = function(){
           if(selScore){
             for(let j=0; j<selScore.length; j++){
-              if (i==j){
+              if (i==selScore[j]){
                 break;
               }
             }
@@ -182,6 +182,7 @@ const Game = (function(){
             console.log(selScore);
             delSimScore(selScore);
           }
+          console.log("selScore: ", selScore);
 
           $('.table-button').attr('disabled',true);
           $('.turn-button').attr('disabled',false); 

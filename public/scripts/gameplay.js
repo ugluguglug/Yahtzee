@@ -135,10 +135,19 @@ function updateCheck(readyCheck, diceArr, selDice, selScore){
         score = checkScore(diceArr);
         console.log(score);
         for(let i=0; i<score.length; i++){
+            let keep=0
+            if(selScore){
+                for(let j=0; j<selScore.length; j++){
+                  if (i==selScore[j]){
+                    keep = 1;
+                    break;
+                  }
+                }
             if(document.getElementById("uscore"+(i+1)).innerHTML==""){
                 console.log("changing score",(i+1));
                 document.getElementById("uscore"+(i+1)).innerHTML=score[i];
             }
+        }
         }
 
     }
@@ -152,18 +161,23 @@ function updateCheck(readyCheck, diceArr, selDice, selScore){
 function delSimScore(selScore){
     for(let i=0; i<13; i++){
         let keep=0;
-        if(selScore){
+        if(selScore.length>0){
             for(let j=0; j<selScore.length; j++){
                 if(i==selScore[j]){
                     keep=1;
+                }
+                if(j==selScore.length-1){
+                    if(keep==0){
+                        console.log("deleting sim score", i+1)
+                        document.getElementById("uscore"+(i+1)).innerHTML="";
+                    }
                 }       
             }
         }
-        if(keep==0){
-            console.log("deleting score", i+1)
+        else{
+            //console.log("deleting score with 0 selScore", i+1)
             document.getElementById("uscore"+(i+1)).innerHTML="";
         }
-
     }    
 }
 
