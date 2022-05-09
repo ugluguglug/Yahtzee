@@ -32,6 +32,7 @@ const Socket = (function() {
         socket.on('owner quit', handleOwnerQuit);
         socket.on('guest quit', handleGuestQuit);
         socket.on('highscores', handleHighscores);
+        socket.on('opponent left', handleOpponentDisconnect);
 
         function handleInit(opponentName){
             GamePage.handleInit(opponentName);
@@ -62,6 +63,9 @@ const Socket = (function() {
         }
         function handleHighscores(highscores){
             GamePage.handleHighscores(highscores);
+        }
+        function handleOpponentDisconnect(){
+            GamePage.handleOpponentDisconnect();
         }
 
     };

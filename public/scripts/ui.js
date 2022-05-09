@@ -148,6 +148,7 @@ const GamePage = (function() {
     }
 
     function gameover(){
+        gameActive = false;
         ingame_sound.animate({volume: 0}, 1000);
         setTimeout(ingame_sound.pause());
         gameover_sound.play();
@@ -173,10 +174,7 @@ const GamePage = (function() {
             }
         }        
     }
-    function backToMain(){
-        $("#gameover-page").hide();
-        $("#initialScreen").show();
-    }
+
     function leave(){
         click_sound.play();
         console.log("Client sent leave ");
@@ -199,7 +197,8 @@ const GamePage = (function() {
     }
     
     //Start the game when the 2nd player joined the room
-    function handleInit(opponent){      
+    function handleInit(opponent){     
+        gameActive = true; 
         $("#initialScreen").hide();
         $("#createNewGame").hide();
         $("#gameStarting").show();
@@ -212,10 +211,15 @@ const GamePage = (function() {
         function countdown(){
             timeleft = timeleft -1;
             if(timeleft >0){
+                if(gameActive == false){
+                    $("#gameStarting").hide();
+                    $("#initialScreen").show();
+                    return;
+                }
                 gameStartingCountdown.innerText = timeleft;
                 setTimeout(countdown, 1000);
             }else{
-                gameStartingCountdown.innerText = "";
+                gameStartingCountdown.innerText = "0";
                 startGame();
             }
         }
@@ -225,7 +229,7 @@ const GamePage = (function() {
             console.log("Game Start!");
             reset();
             Game.newGame(playerNumber);
-            ingame_sound.volume = 0.06;
+            ingame_sound.volume = 0.02;
             ingame_sound.loop = true;
             ingame_sound.currentTime = 0;
             ingame_sound.play();
@@ -270,6 +274,7 @@ const GamePage = (function() {
         }
     }
     function initRematch(){
+        gameActive = true;
         $("#gameover-page").hide();
         $("#gameStarting").show();
         reset();
@@ -280,10 +285,15 @@ const GamePage = (function() {
         function countdown(){
             timeleft = timeleft -1;
             if(timeleft >0){
+                if(gameActive == false){
+                    $("#gameStarting").hide();
+                    $("#initialScreen").show();
+                    return;
+                }
                 gameStartingCountdown.innerText = timeleft;
                 setTimeout(countdown, 1000);
             }else{
-                gameStartingCountdown.innerText = "";
+                gameStartingCountdown.innerText = "0";
                 startRematch();
             }
         }
@@ -292,7 +302,7 @@ const GamePage = (function() {
         function startRematch(){
             console.log("Game Start!");
             Game.newGame(playerNumber);
-            ingame_sound.volume = 0.06;
+            ingame_sound.volume = 0.02;
             ingame_sound.loop = true;
             ingame_sound.currentTime = 0;
             ingame_sound.play();
@@ -334,6 +344,22 @@ const GamePage = (function() {
         }
 
     }
+    function handleOpponentDisconnect(){
+        console.log("receive opponent dc");
+        gameActive = false;
+        ingame_sound.animate({volume: 0}, 1000);
+        setTimeout(ingame_sound.pause());
+        opponent_quit_sound.play();
+        alert("Your opponent has disconnected");
+        Socket.quit();
+        gameStartingCountdown.innerText = "6";
+        $("#game-page").hide();
+        $("#gameStarting").hide();
+        $("#initialScreen").show();
+
+
+    }
+    
 
     const initialize = function() {
 
@@ -383,7 +409,8 @@ const GamePage = (function() {
     return { initialize, handleInit, sendDiceRoll, sendScore, handleOpponentDice, 
         handleOpponentScore, handleGameCode, handleUnknownCode, 
         handleTooManyPlayers, show, hide, update,
-        gameover, handleRematch, handleOwnerQuit, handleGuestQuit, handleHighscores
+        gameover, handleRematch, handleOwnerQuit, handleGuestQuit, handleHighscores,
+        handleOpponentDisconnect
      };
 })();
 
