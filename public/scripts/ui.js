@@ -106,6 +106,10 @@ const GamePage = (function() {
         rematchStatus = 0;
         document.getElementById("gameover-text").innerHTML = "";
         document.getElementById('rematch-button').disabled = false;
+        for(let i=0; i<10;i++){
+            document.getElementById("username"+(i+1)).innerHTML = "";
+            document.getElementById("userscore"+(i+1)).innerHTML = "";
+        }
 
     }
     function newGame(){
@@ -149,7 +153,7 @@ const GamePage = (function() {
         gameover_sound.play();
         let score = Game.getTotalScore();
         Socket.gameover(score);
-        Socket.getHighscore();
+        setTimeout(Socket.getHighscore, 500);
         document.getElementById("opponent-username").innerHTML = opponentName;
         $("#game-page").hide();
         $("#gameover-page").show();

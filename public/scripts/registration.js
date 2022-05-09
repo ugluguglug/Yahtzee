@@ -28,7 +28,11 @@ const Registration = (function() {
                 // F. Processing any error returned by the server
                 //
                 if (json.status == "success") {
+                    document.getElementById("signin-username").value = username;
+                    document.getElementById("signin-password").value = password;
+                    document.getElementById("signin-form").scrollIntoView();
                     onSuccess();
+
                 }
                 //
                 // J. Handling the success response from the server
