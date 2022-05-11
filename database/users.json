@@ -7,6 +7,10 @@
   "password": "$2b$10$/EXRKjO0MEez6I.ASdTiU.B1CUjDX8xhYiEvh.ua7izY7z7QE4ufq",
   "highscore": 10
  },
+ "3": {
+  "password": "$2b$10$45T5hgrt4bB8kKUDuN7Db.8A9D9SzvxD37TNzl62dBVKSQ/9zFHCe",
+  "highscore": 0
+ },
  "abc": {
   "password": "$2b$10$neYhgJciv2pYxz4NcDfIr.kYB4aptIctblVkSvOAL6GIAQrVQ1ooy",
   "highscore": 100
