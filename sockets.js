@@ -32,7 +32,7 @@ function getRoomIdByUsername(rooms, user) {
 function getOpponent(rooms, user) {
     let roomId = getRoomIdByUsername(rooms, user);
     if (!roomId) {
-        console.log(`[ERROR] User ${user} is not in any room`);
+        // console.log(`[ERROR] User ${user} is not in any room`);
         return {
             opponentName: null,
             role: null
@@ -52,7 +52,7 @@ function getOpponent(rooms, user) {
         };
     }
     else {
-        console.log("[ERROR] Unexpected case in getOpponent");
+        // console.log("[ERROR] Unexpected case in getOpponent");
         return {
             opponentName: null,
             role: null
@@ -183,9 +183,9 @@ exports = module.exports = function (io) {
             const { opponentName, role } = getOpponent(rooms, user);
             const roomId = getRoomIdByUsername(rooms, user);
 
-            // If user quite without room
+            // If user quit without room
             if (!roomId) {
-                console.log(`[ERROR ]User ${user} emitted quit without a room`);
+                // console.log(`[ERROR ]User ${user} emitted quit without a room`);
                 return;
             }
 
@@ -255,7 +255,7 @@ exports = module.exports = function (io) {
 
             // Catch error
             if (!(opponentName || role)) {
-                console.log("[ERROR] No opponentName and role returned");
+                // console.log("[ERROR] No opponentName and role returned");
                 return;
             }
 
