@@ -98,7 +98,8 @@ const GamePage = (function() {
     let gameover_sound = new Audio("./music/valorant_win.mp3");
     let ingame_sound = new Audio("./music/suwako_theme.mp3");
     let opponent_quit_sound = new Audio("./music/you_died.mp3");
-
+    let end_turn_sound = new Audio("./music/oof.mp3");
+    
 
     //Request new room 
     function reset(){
@@ -144,7 +145,8 @@ const GamePage = (function() {
             opponent: opponentName
         }
         Socket.sendScore(data);
-        console.log("Send Score ", data)
+        console.log("Send Score ", data);
+        end_turn_sound.play();
     }
 
     function gameover(){
@@ -203,6 +205,7 @@ const GamePage = (function() {
         $("#createNewGame").hide();
         $("#gameStarting").show();
         match_found_sound.play();
+        end_turn_sound.volume = 0.3;
 
         opponentName = opponent;
         opponentNameDisplay.innerText = opponentName;
@@ -249,6 +252,7 @@ const GamePage = (function() {
         Game.opponentScore(Score);
         console.log("receive opponent score");
         console.log("opponent score", Score);
+        end_turn_sound.play();
     }
 
     function handleGameCode(gameCode){
@@ -278,6 +282,7 @@ const GamePage = (function() {
         $("#gameover-page").hide();
         $("#gameStarting").show();
         reset();
+        end_turn_sound.volume = 0.3;
         rematch_sound.play();
         opponentNameDisplay.innerText = opponentName;
         let timeleft = 6;
