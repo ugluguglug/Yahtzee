@@ -128,3 +128,5 @@ dist
 
 test.html
 test.js
+database/
+.replit
