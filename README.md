@@ -9,7 +9,7 @@ npm run start
 The game is now ready! Visit http://localhost:8000 to start playing
 
 ## Play online
-https://yahtzee-1.ugluguglug.repl.co/ (May take some time to initialize)
+https://yahtzee.ugluguglug.repl.co/ (May take some time to initialize)
 
 
 ## How to play
